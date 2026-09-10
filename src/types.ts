@@ -108,6 +108,7 @@ export interface FunctionColors {
   userMsgBtnColor: string;
   axonMsgBtnColor: string;
   messageButtonAutoContrast: boolean;
+  micRecordingColor?: string;
   toolText: string;
   toolCalc: string;
   toolColors: string;

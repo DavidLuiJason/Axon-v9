@@ -390,6 +390,7 @@ const DEFAULT_FUNCTION_COLORS: FunctionColors = {
   userMsgBtnColor: '#000000',
   axonMsgBtnColor: '#ffffff',
   messageButtonAutoContrast: true,
+  micRecordingColor: '#ef4444',
   toolText: '#ffffff',
   toolCalc: '#ffffff',
   toolColors: '#ffffff',

@@ -28,6 +28,7 @@ import {
   CheckSquare,
   Square,
   Send,
+  Mic,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AxonLogo } from '../components/AxonLogo';
@@ -698,6 +699,130 @@ export const SettingsScreen: React.FC = () => {
                         </label>
                       </div>
                     </div>
+
+                    {/* Microphone Recording Indicator */}
+                    <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800/80 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300">
+                            <Mic className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-white">Microphone Recording Indicator</p>
+                            <p className="text-[11px] text-neutral-400">
+                              Active recording button and listening status bar color
+                            </p>
+                          </div>
+                        </div>
+                        {(fColors.micRecordingColor || '#ef4444').toLowerCase() !== '#ef4444' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFunctionColor('micRecordingColor', '#ef4444');
+                              showToast('Reset mic indicator color to default');
+                            }}
+                            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-neutral-800 transition-colors"
+                            title="Reset indicator to default red"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            <span>Reset</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Swatches and Custom Color Picker */}
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-neutral-300">Preset Swatches</span>
+                          <span className="text-[11px] font-mono text-neutral-400 uppercase">
+                            {fColors.micRecordingColor || '#ef4444'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div className="flex items-center gap-2.5">
+                            {[
+                              { hex: '#ef4444', name: 'Crimson Red (Default)' },
+                              { hex: '#f97316', name: 'Amber Orange' },
+                              { hex: '#eab308', name: 'Golden Sun' },
+                              { hex: '#10b981', name: 'Emerald Green' },
+                              { hex: '#3b82f6', name: 'Cyber Blue' },
+                              { hex: '#a855f7', name: 'Violet Purple' },
+                              { hex: '#ec4899', name: 'Neon Pink' },
+                            ].map((swatch) => {
+                              const currentColor = (fColors.micRecordingColor || '#ef4444').toLowerCase();
+                              const isSelected = currentColor === swatch.hex.toLowerCase();
+                              return (
+                                <button
+                                  key={swatch.hex}
+                                  type="button"
+                                  onClick={() => setFunctionColor('micRecordingColor', swatch.hex)}
+                                  title={swatch.name}
+                                  className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform active:scale-95 ${
+                                    isSelected
+                                      ? 'ring-2 ring-white ring-offset-2 ring-offset-neutral-900 scale-110'
+                                      : 'opacity-70 hover:opacity-100'
+                                  }`}
+                                  style={{ backgroundColor: swatch.hex }}
+                                >
+                                  {isSelected && (
+                                    <Check className="w-3.5 h-3.5 text-white drop-shadow" />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* Custom Color Input */}
+                          <label className="p-2 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center gap-2 cursor-pointer hover:border-neutral-700 transition-colors">
+                            <span className="text-xs text-neutral-400">Custom</span>
+                            <input
+                              type="color"
+                              value={fColors.micRecordingColor || '#ef4444'}
+                              onChange={(e) => setFunctionColor('micRecordingColor', e.target.value)}
+                              className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
+                              title="Choose custom recording color"
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Live Mini Preview */}
+                      <div className="pt-2.5 border-t border-neutral-850/80 flex items-center justify-between gap-3 text-xs bg-neutral-900/40 p-3 rounded-xl border border-neutral-800/60">
+                        <div
+                          className="flex items-center gap-2 text-xs px-2.5 py-1 rounded-lg border"
+                          style={{
+                            color: fColors.micRecordingColor || '#ef4444',
+                            borderColor: `${fColors.micRecordingColor || '#ef4444'}55`,
+                            backgroundColor: `${fColors.micRecordingColor || '#ef4444'}12`,
+                          }}
+                        >
+                          <span
+                            className="w-2 h-2 rounded-full animate-ping"
+                            style={{ backgroundColor: fColors.micRecordingColor || '#ef4444' }}
+                          />
+                          <span className="font-medium text-[11px]">Listening... (Preview)</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-neutral-400">Active Mic:</span>
+                          <div
+                            className="p-2 rounded-xl shadow-sm flex items-center justify-center transition-all"
+                            style={{
+                              backgroundColor: fColors.micRecordingColor || '#ef4444',
+                              color:
+                                getContrastRatio('#ffffff', fColors.micRecordingColor || '#ef4444') >= 2
+                                  ? '#ffffff'
+                                  : '#000000',
+                            }}
+                            title="Active mic button preview"
+                          >
+                            <Mic className="w-4 h-4" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
 
                     {/* Color Mixer Link */}
                     <button

@@ -29,7 +29,7 @@ import { AxonLogo } from './AxonLogo';
 import { ModelSelectorModal } from './ModelSelectorModal';
 import { ChatShortcutBar } from './ChatShortcutBar';
 import { isAccountInCooldown, getRemainingCooldownString } from '../lib/aiConfig';
-import { resolveMessageButtonColor } from '../lib/colorContrast';
+import { resolveMessageButtonColor, getContrastRatio } from '../lib/colorContrast';
 
 export const ChatPane: React.FC = () => {
   const {
@@ -102,6 +102,7 @@ export const ChatPane: React.FC = () => {
   const cooldownString = getRemainingCooldownString(activeAccount);
 
   const functionColors = theme.functionColors || {};
+  const micRecordingColor = functionColors.micRecordingColor || '#ef4444';
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -790,10 +791,19 @@ export const ChatPane: React.FC = () => {
         {isRecording && (
           <div
             id="voice-recording-banner"
-            className="mx-3 mt-2 p-2.5 rounded-xl bg-neutral-900 border border-red-500/40 flex items-center justify-between animate-pulse"
+            style={{
+              borderColor: `${micRecordingColor}66`,
+            }}
+            className="mx-3 mt-2 p-2.5 rounded-xl bg-neutral-900 border flex items-center justify-between animate-pulse"
           >
-            <div className="flex items-center gap-2 text-xs text-red-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
+            <div
+              className="flex items-center gap-2 text-xs"
+              style={{ color: micRecordingColor }}
+            >
+              <span
+                className="w-2.5 h-2.5 rounded-full animate-ping"
+                style={{ backgroundColor: micRecordingColor }}
+              />
               <span className="font-medium">Listening ({recordingSeconds}s)...</span>
             </div>
             <button
@@ -914,9 +924,17 @@ export const ChatPane: React.FC = () => {
             onClick={handleToggleVoice}
             aria-label={isRecording ? 'Mute microphone' : 'Voice input'}
             title={isRecording ? 'Stop Voice' : 'Voice Input'}
+            style={{
+              backgroundColor: isRecording ? micRecordingColor : undefined,
+              color: isRecording
+                ? getContrastRatio('#ffffff', micRecordingColor) >= 2
+                  ? '#ffffff'
+                  : '#000000'
+                : undefined,
+            }}
             className={`p-2 rounded-xl transition-all active:scale-95 ${
               isRecording
-                ? 'bg-red-600 text-white'
+                ? 'shadow-sm'
                 : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
             }`}
           >
