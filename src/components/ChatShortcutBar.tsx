@@ -152,7 +152,15 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
   onClose,
   onInsertPrompt,
 }) => {
-  const { navigateTo, setPaneViewState, showToast, createProject } = useApp();
+  const {
+    navigateTo,
+    setPaneViewState,
+    showToast,
+    createProject,
+    openPanel,
+    closePanel,
+    isPanelOpen,
+  } = useApp();
 
   // Custom shortcuts created by user
   const [customShortcuts, setCustomShortcuts] = useState<ShortcutItem[]>(() => {
@@ -182,8 +190,21 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
     return ['axon', 'tools', 'code', 'notes', 'settings', 'automation', 'tool_calc', 'tool_text'];
   });
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [localEditModalOpen, setLocalEditModalOpen] = useState(false);
   const [isCreatingCustom, setIsCreatingCustom] = useState(false);
+
+  const isEditModalOpen = isPanelOpen('customize-shortcuts') || localEditModalOpen;
+
+  const handleOpenCustomize = () => {
+    setLocalEditModalOpen(true);
+    openPanel('customize-shortcuts');
+  };
+
+  const handleCloseCustomize = () => {
+    setLocalEditModalOpen(false);
+    setIsCreatingCustom(false);
+    closePanel('customize-shortcuts');
+  };
 
   // New custom shortcut form state
   const [newLabel, setNewLabel] = useState('');
@@ -327,7 +348,7 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
             <button
               id="chat-edit-shortcuts-btn"
               type="button"
-              onClick={() => setIsEditModalOpen(true)}
+              onClick={handleOpenCustomize}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-900 hover:bg-neutral-850 active:scale-95 text-neutral-200 hover:text-white border border-neutral-700 text-xs font-semibold transition-all shadow-sm"
               title="Customize Shortcuts"
             >
@@ -369,7 +390,7 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
           {/* Direct Add Shortcut Button at end of scroll */}
           <button
             type="button"
-            onClick={() => setIsEditModalOpen(true)}
+            onClick={handleOpenCustomize}
             className="flex items-center gap-1.5 shrink-0 px-3 py-2 rounded-xl border border-dashed border-neutral-700 hover:border-neutral-500 text-neutral-400 hover:text-white text-xs font-semibold active:scale-95 transition-all"
             title="Add or create shortcuts"
           >
@@ -382,10 +403,7 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
       {/* Edit & Create Shortcuts Modal (Fully self-contained via ModalOverlayContainer) */}
       <ModalOverlayContainer
         isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setIsCreatingCustom(false);
-        }}
+        onClose={handleCloseCustomize}
         id="edit-shortcuts-modal"
         maxWidth="md"
         ariaLabel="Customize Shortcuts"
@@ -401,10 +419,7 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
           </div>
           <button
             type="button"
-            onClick={() => {
-              setIsEditModalOpen(false);
-              setIsCreatingCustom(false);
-            }}
+            onClick={handleCloseCustomize}
             className="p-1.5 rounded-lg bg-neutral-900 text-neutral-400 hover:text-white"
           >
             <X className="w-4 h-4" />
@@ -707,10 +722,7 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
 
               <button
                 type="button"
-                onClick={() => {
-                  setIsEditModalOpen(false);
-                  setIsCreatingCustom(false);
-                }}
+                onClick={handleCloseCustomize}
                 className="px-5 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 text-xs font-semibold active:scale-95 transition-all shadow-md"
               >
                 Done

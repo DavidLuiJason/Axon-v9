@@ -20,7 +20,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMenu }) => {
     currentScreen,
     goBack,
     navigateTo,
-    canGoBack,
     openPanel,
     closePanel,
     isPanelOpen,
@@ -85,32 +84,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMenu }) => {
       {/* Left side: Hamburger on main screen OR Back button on all other screens */}
       <div className="flex items-center gap-1.5">
         {isMainScreen ? (
-          <div className="flex items-center gap-1">
-            <button
-              id="hamburger-trigger-btn"
-              type="button"
-              onClick={onOpenMenu}
-              aria-label="Open navigation menu"
-              className="p-2 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-900 active:scale-95 transition-all"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            {canGoBack && (
-              <button
-                id="global-back-btn"
-                type="button"
-                onClick={goBack}
-                aria-label="Go back"
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-900 active:scale-95 transition-all font-medium text-xs border border-neutral-800"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back</span>
-              </button>
-            )}
-          </div>
+          <button
+            id="hamburger-trigger-btn"
+            type="button"
+            onClick={onOpenMenu}
+            aria-label="Open navigation menu"
+            className="p-2 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-900 active:scale-95 transition-all"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         ) : (
           <button
-            id="global-back-btn"
+            id="header-back-button"
+            data-testid="global-back-btn"
             type="button"
             onClick={goBack}
             aria-label="Go back"
