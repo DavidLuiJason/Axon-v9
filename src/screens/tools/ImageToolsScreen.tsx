@@ -346,8 +346,8 @@ export const ImageToolsScreen: React.FC = () => {
         cCtx.rect(x, y, cellW, cellH);
         cCtx.clip();
 
-        // High quality aspect-fill
-        const scale = Math.max(cellW / img.naturalWidth, cellH / img.naturalHeight);
+        // High quality aspect-fit (preserve full image content without cropping)
+        const scale = Math.min(cellW / img.naturalWidth, cellH / img.naturalHeight);
         const w = img.naturalWidth * scale;
         const h = img.naturalHeight * scale;
         const ox = x + (cellW - w) / 2;
@@ -871,42 +871,70 @@ export const ImageToolsScreen: React.FC = () => {
                 </div>
 
                 {/* Gap & Background Controls */}
-                <div className="grid grid-cols-2 gap-3 pt-1">
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-[11px] text-neutral-400">
-                      <span>Grid Gap</span>
-                      <span>{collageGap}px</span>
+                <div className="space-y-3 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[11px] text-neutral-400">
+                        <span>Grid Gap</span>
+                        <span className="font-mono text-white text-[11px]">{collageGap}px</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="24"
+                        value={collageGap}
+                        onChange={(e) => setCollageGap(parseInt(e.target.value, 10) || 0)}
+                        className="w-full accent-white cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="2"
-                      max="24"
-                      value={collageGap}
-                      onChange={(e) => setCollageGap(parseInt(e.target.value))}
-                      className="w-full accent-white"
-                    />
-                  </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[11px] text-neutral-400 block">Canvas Border</label>
-                    <div className="flex gap-2">
-                      {[
-                        { color: '#000000', label: 'Black' },
-                        { color: '#262626', label: 'Gray' },
-                        { color: '#ffffff', label: 'White' },
-                      ].map((c) => (
-                        <button
-                          key={c.color}
-                          type="button"
-                          onClick={() => setCollageBg(c.color)}
-                          className={`flex-1 py-1 rounded-lg text-[10px] font-medium border ${
-                            collageBg === c.color ? 'border-white text-white' : 'border-neutral-800 text-neutral-400'
-                          }`}
-                          style={{ backgroundColor: c.color === '#ffffff' ? '#ffffff' : '#171717', color: c.color === '#ffffff' ? '#000' : '#fff' }}
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center text-[11px] text-neutral-400">
+                        <span>Gap & Canvas Color</span>
+                        <span className="font-mono text-[10px] text-neutral-300 uppercase">{collageBg}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                        {[
+                          { color: '#000000', label: 'Black' },
+                          { color: '#262626', label: 'Dark Gray' },
+                          { color: '#475569', label: 'Slate' },
+                          { color: '#ffffff', label: 'White' },
+                          { color: '#ef4444', label: 'Red' },
+                          { color: '#f97316', label: 'Orange' },
+                          { color: '#eab308', label: 'Yellow' },
+                          { color: '#10b981', label: 'Green' },
+                          { color: '#06b6d4', label: 'Cyan' },
+                          { color: '#3b82f6', label: 'Blue' },
+                          { color: '#8b5cf6', label: 'Purple' },
+                          { color: '#ec4899', label: 'Pink' },
+                        ].map((c) => (
+                          <button
+                            key={c.color}
+                            type="button"
+                            title={c.label}
+                            onClick={() => setCollageBg(c.color)}
+                            className={`w-5 h-5 rounded-full border transition-all ${
+                              collageBg.toLowerCase() === c.color.toLowerCase()
+                                ? 'border-white scale-110 ring-2 ring-white/40'
+                                : 'border-neutral-700 hover:border-neutral-400 hover:scale-105'
+                            }`}
+                            style={{ backgroundColor: c.color }}
+                          />
+                        ))}
+                        {/* Custom Color Picker Swatch */}
+                        <label
+                          className="relative w-5 h-5 rounded-full border border-neutral-700 hover:border-neutral-400 hover:scale-105 flex items-center justify-center cursor-pointer overflow-hidden transition-all bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500"
+                          title="Custom Color Picker"
                         >
-                          {c.label}
-                        </button>
-                      ))}
+                          <input
+                            type="color"
+                            value={collageBg}
+                            onChange={(e) => setCollageBg(e.target.value)}
+                            className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                          />
+                          <span className="text-[10px] font-bold text-white drop-shadow pointer-events-none leading-none">+</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
