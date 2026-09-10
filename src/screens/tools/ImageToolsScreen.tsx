@@ -239,12 +239,6 @@ export const ImageToolsScreen: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // High-resolution canvas for crisp export and zoom (2400x2400)
-    const width = 2400;
-    const height = 2400;
-    canvas.width = width;
-    canvas.height = height;
-
     // Calculate slots
     let cols = 2;
     let rows = 2;
@@ -304,10 +298,6 @@ export const ImageToolsScreen: React.FC = () => {
       cols = 10; rows = 10;
     }
 
-    const scaledGap = collageGap * 2;
-    const cellW = (width - scaledGap * (cols + 1)) / cols;
-    const cellH = (height - scaledGap * (rows + 1)) / rows;
-
     const totalSlots = cols * rows;
     const imagesToDraw = collageImages.slice(0, totalSlots);
 
@@ -327,6 +317,40 @@ export const ImageToolsScreen: React.FC = () => {
       const c = collageCanvasRef.current;
       const cCtx = c.getContext('2d');
       if (!cCtx) return;
+
+      // Determine the natural aspect ratio of the images being merged
+      const valid = loaded.filter((item) => item.img.naturalWidth > 0 && item.img.naturalHeight > 0);
+      const avgAspect =
+        valid.length > 0
+          ? valid.reduce((sum, item) => sum + item.img.naturalWidth / item.img.naturalHeight, 0) / valid.length
+          : 1.0;
+      const cellAspect = Math.max(0.15, Math.min(6.0, avgAspect));
+
+      // Calculate gap scaled proportionally to high-resolution canvas (~4 canvas px per 1px slider value)
+      const scaledGap = Math.round(collageGap * 4);
+
+      // Adapt canvas dimensions and cell bounds to match the images' aspect ratio so spacing is uniform on all 4 sides
+      const MAX_DIM = 2400;
+      const totalAspect = (cols * cellAspect) / rows;
+      let width = MAX_DIM;
+      let height = MAX_DIM;
+      let cellW = 0;
+      let cellH = 0;
+
+      if (totalAspect >= 1) {
+        width = MAX_DIM;
+        cellW = Math.max(1, (width - scaledGap * (cols + 1)) / cols);
+        cellH = Math.max(1, cellW / cellAspect);
+        height = Math.round(rows * cellH + scaledGap * (rows + 1));
+      } else {
+        height = MAX_DIM;
+        cellH = Math.max(1, (height - scaledGap * (rows + 1)) / rows);
+        cellW = Math.max(1, cellH * cellAspect);
+        width = Math.round(cols * cellW + scaledGap * (cols + 1));
+      }
+
+      c.width = width;
+      c.height = height;
 
       cCtx.imageSmoothingEnabled = true;
       cCtx.imageSmoothingQuality = 'high';
@@ -881,7 +905,7 @@ export const ImageToolsScreen: React.FC = () => {
                       <input
                         type="range"
                         min="0"
-                        max="24"
+                        max="32"
                         value={collageGap}
                         onChange={(e) => setCollageGap(parseInt(e.target.value, 10) || 0)}
                         className="w-full accent-white cursor-pointer"
