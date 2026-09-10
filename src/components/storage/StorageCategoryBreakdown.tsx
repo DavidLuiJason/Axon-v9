@@ -38,20 +38,22 @@ export const StorageCategoryBreakdown: React.FC<StorageCategoryBreakdownProps> =
             key={cat}
             type="button"
             onClick={() => onSelectCategory(isSelected ? 'all' : cat)}
-            className={`p-4 rounded-2xl border text-left transition-all ${
+            className={`p-4 rounded-xl border text-left transition-all space-y-2 ${
               isSelected
-                ? 'bg-neutral-800 border-white text-white'
-                : 'bg-neutral-900/60 border-neutral-800 text-neutral-300 hover:bg-neutral-850 hover:text-white'
+                ? 'bg-neutral-900 border-neutral-600 text-white'
+                : 'bg-neutral-950/60 border-neutral-850 text-neutral-300 hover:border-neutral-700 hover:text-white'
             }`}
           >
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-white">{meta.label}</span>
-              <span className="text-[11px] px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800">
                 {count} {count === 1 ? 'item' : 'items'}
               </span>
             </div>
-            <p className="text-[11px] text-neutral-400 mb-3">{meta.description}</p>
-            <div className="text-sm font-bold text-white tracking-tight">{formatBytes(stored)}</div>
+            <p className="text-xs text-neutral-400 leading-relaxed">{meta.description}</p>
+            <div className="text-sm font-semibold text-white tracking-tight pt-1 font-mono">
+              {formatBytes(stored)}
+            </div>
           </button>
         );
       })}

@@ -185,16 +185,16 @@ export const NotesScreen: React.FC = () => {
   return (
     <div
       id="notes-screen"
-      className="flex-1 min-h-0 overflow-y-auto bg-black text-white p-4 select-none"
+      className="flex-1 min-h-0 overflow-y-auto bg-black text-white p-4 sm:p-6 select-none"
     >
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="max-w-3xl mx-auto space-y-6">
         {/* Header bar with Back button and New Note action */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-3 border-b border-neutral-850">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              <span>Notes & Memory</span>
+            <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
+              Notes & Memory
             </h2>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-neutral-400 mt-0.5">
               {filteredNotes.length} {filteredNotes.length === 1 ? 'note' : 'notes'} • Context-isolated workspace
             </p>
           </div>
@@ -203,110 +203,113 @@ export const NotesScreen: React.FC = () => {
             id="notes-add-new-btn"
             type="button"
             onClick={handleStartCreate}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 active:scale-95 text-xs font-semibold shadow-sm transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 active:scale-95 text-xs font-semibold shadow-sm transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>New Note</span>
           </button>
         </div>
 
-        {/* Project Scope Filter Banner */}
-        <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-2xl bg-neutral-900/70 border border-neutral-800">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-neutral-400 pl-1">
-            <Folder className="w-3.5 h-3.5 text-neutral-400" />
-            <span>Scope:</span>
-          </div>
+        {/* Filters & Search Control Section */}
+        <div className="space-y-3">
+          {/* Project Scope Filter Banner */}
+          <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-neutral-900/40 border border-neutral-800/80 text-xs">
+            <div className="flex items-center gap-1.5 text-neutral-400 pl-0.5 font-medium">
+              <Folder className="w-3.5 h-3.5 text-neutral-400" />
+              <span>Scope:</span>
+            </div>
 
-          <button
-            type="button"
-            onClick={() => setProjectFilter('active')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-              projectFilter === 'active'
-                ? 'bg-white text-black font-semibold'
-                : 'bg-neutral-800/80 text-neutral-300 hover:text-white'
-            }`}
-          >
-            Current: {activeProject.name}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setProjectFilter('all')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-              projectFilter === 'all'
-                ? 'bg-white text-black font-semibold'
-                : 'bg-neutral-800/80 text-neutral-300 hover:text-white'
-            }`}
-          >
-            All Projects ({notes.length})
-          </button>
-
-          {/* Individual project filter dropdown */}
-          <div className="relative ml-auto">
-            <select
-              value={projectFilter.startsWith('proj-') ? projectFilter : ''}
-              onChange={(e) => {
-                if (e.target.value) setProjectFilter(e.target.value);
-              }}
-              className="bg-neutral-950 border border-neutral-800 text-neutral-300 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-neutral-600 appearance-none pr-6 cursor-pointer"
+            <button
+              type="button"
+              onClick={() => setProjectFilter('active')}
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                projectFilter === 'active'
+                  ? 'bg-white text-black font-semibold'
+                  : 'bg-neutral-900 text-neutral-300 hover:text-white hover:bg-neutral-800'
+              }`}
             >
-              <option value="">Filter by Project...</option>
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
+              Current: {activeProject.name}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setProjectFilter('all')}
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                projectFilter === 'all'
+                  ? 'bg-white text-black font-semibold'
+                  : 'bg-neutral-900 text-neutral-300 hover:text-white hover:bg-neutral-800'
+              }`}
+            >
+              All Projects ({notes.length})
+            </button>
+
+            {/* Individual project filter dropdown */}
+            <div className="relative sm:ml-auto">
+              <select
+                value={projectFilter.startsWith('proj-') ? projectFilter : ''}
+                onChange={(e) => {
+                  if (e.target.value) setProjectFilter(e.target.value);
+                }}
+                className="bg-neutral-950 border border-neutral-800 text-neutral-300 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-neutral-600 appearance-none pr-6 cursor-pointer"
+              >
+                <option value="">Filter by Project...</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3 h-3 text-neutral-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Search bar & Category filters */}
+          <div className="space-y-2.5">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" />
+              <input
+                id="notes-search-input"
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Full-text search notes, extracts, tags..."
+                className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600 transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white p-1"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Category Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategoryFilter(cat.id)}
+                  className={`px-3 py-1 rounded-xl text-xs whitespace-nowrap transition-all ${
+                    categoryFilter === cat.id
+                      ? 'bg-white text-black font-semibold'
+                      : 'bg-neutral-900/60 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700'
+                  }`}
+                >
+                  {cat.label}
+                </button>
               ))}
-            </select>
-            <ChevronDown className="w-3 h-3 text-neutral-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-          </div>
-        </div>
-
-        {/* Search bar & Category filters */}
-        <div className="space-y-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
-            <input
-              id="notes-search-input"
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Full-text search notes, extracts, tags..."
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600 transition-colors"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Category Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setCategoryFilter(cat.id)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap transition-all ${
-                  categoryFilter === cat.id
-                    ? 'bg-neutral-200 text-black font-semibold'
-                    : 'bg-neutral-900 border border-neutral-800/80 text-neutral-400 hover:text-white hover:border-neutral-700'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+            </div>
           </div>
         </div>
 
         {/* Note Creator/Editor Inline Card */}
         {isCreating && (
-          <div className="rounded-2xl bg-neutral-900 border border-neutral-700 p-4 space-y-3.5 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between">
+          <div className="rounded-2xl bg-neutral-900/60 border border-neutral-700/80 p-5 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-2.5">
               <span className="text-xs font-semibold text-white">
                 {editingNoteId ? 'Edit Note' : 'Create New Note'}
               </span>
@@ -325,21 +328,21 @@ export const NotesScreen: React.FC = () => {
               value={titleInput}
               onChange={(e) => setTitleInput(e.target.value)}
               placeholder="Note title..."
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600"
+              className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600"
               autoFocus
             />
 
             {/* Scope / Project Assignment & Category */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10px] text-neutral-400 mb-1 font-medium">
+                <label className="block text-[11px] text-neutral-400 mb-1.5 font-medium">
                   Assign to Project
                 </label>
                 <select
                   id="note-project-select"
                   value={projectInput}
                   onChange={(e) => setProjectInput(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-neutral-600"
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-neutral-600"
                 >
                   {projects.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -351,14 +354,14 @@ export const NotesScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] text-neutral-400 mb-1 font-medium">
+                <label className="block text-[11px] text-neutral-400 mb-1.5 font-medium">
                   Category
                 </label>
                 <select
                   id="note-category-select"
                   value={categoryInput}
                   onChange={(e) => setCategoryInput(e.target.value as NoteCategory)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-neutral-600"
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-neutral-600"
                 >
                   <option value="general">General Note</option>
                   <option value="extracted_chat">Chat Extract</option>
@@ -370,7 +373,7 @@ export const NotesScreen: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-[10px] text-neutral-400 mb-1 font-medium">
+              <label className="block text-[11px] text-neutral-400 mb-1.5 font-medium">
                 Tags (comma-separated)
               </label>
               <input
@@ -378,7 +381,7 @@ export const NotesScreen: React.FC = () => {
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
                 placeholder="e.g. auth, api, architecture..."
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600"
               />
             </div>
 
@@ -391,11 +394,11 @@ export const NotesScreen: React.FC = () => {
               className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600 resize-none leading-relaxed font-mono"
             />
 
-            <div className="flex items-center justify-end gap-2 pt-1">
+            <div className="flex items-center justify-end gap-2 pt-1 border-t border-neutral-800">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-3 py-1.5 rounded-xl bg-neutral-800 text-xs text-neutral-300 hover:bg-neutral-700 transition-colors"
+                className="px-3.5 py-1.5 rounded-xl bg-neutral-800 text-xs text-neutral-300 hover:bg-neutral-700 transition-colors"
               >
                 Cancel
               </button>
@@ -412,9 +415,9 @@ export const NotesScreen: React.FC = () => {
         )}
 
         {/* Notes List */}
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {filteredNotes.length === 0 ? (
-            <div className="text-center py-12 px-4 rounded-2xl bg-neutral-900/40 border border-neutral-800/80">
+            <div className="text-center py-12 px-4 rounded-2xl bg-neutral-900/30 border border-neutral-800/80">
               <FileText className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-neutral-400">
                 {searchQuery ? 'No matching notes found' : 'No notes in this view'}
@@ -434,34 +437,34 @@ export const NotesScreen: React.FC = () => {
                 <div
                   key={note.id}
                   id={`note-item-${note.id}`}
-                  className={`p-3.5 rounded-2xl border transition-all space-y-2 group select-text ${
+                  className={`p-4 sm:p-5 rounded-xl border transition-colors space-y-3 group select-text ${
                     note.isPinned
-                      ? 'bg-neutral-900/90 border-neutral-700 shadow-sm'
-                      : 'bg-neutral-900/70 border-neutral-800 hover:border-neutral-700'
+                      ? 'bg-neutral-950 border-neutral-700 shadow-sm'
+                      : 'bg-neutral-950/60 border-neutral-850 hover:border-neutral-800'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="space-y-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1.5 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="text-sm font-semibold text-white leading-tight">
+                        <h3 className="text-sm font-semibold text-white leading-snug">
                           {note.title}
                         </h3>
 
                         {note.isPinned && (
-                          <span className="px-1.5 py-0.5 rounded bg-white text-black text-[10px] font-bold flex items-center gap-1">
+                          <span className="px-2 py-0.5 rounded-full bg-white text-black text-[10px] font-semibold flex items-center gap-1">
                             <Pin className="w-2.5 h-2.5 fill-black" />
                             <span>PINNED</span>
                           </span>
                         )}
 
                         {isExtracted && (
-                          <span className="px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-300 text-[10px] border border-neutral-700 flex items-center gap-1">
+                          <span className="px-2 py-0.5 rounded-full bg-neutral-900 text-neutral-300 text-[10px] border border-neutral-800 flex items-center gap-1">
                             <Sparkles className="w-2.5 h-2.5 text-neutral-400" />
                             <span>Chat Extract</span>
                           </span>
                         )}
 
-                        <span className="px-1.5 py-0.5 rounded bg-neutral-950 text-neutral-400 text-[10px] border border-neutral-800">
+                        <span className="px-2 py-0.5 rounded-full bg-neutral-900 text-neutral-400 text-[10px] border border-neutral-800">
                           {projName}
                         </span>
                       </div>
@@ -477,7 +480,7 @@ export const NotesScreen: React.FC = () => {
                         className={`p-1.5 rounded-lg transition-colors ${
                           note.isPinned
                             ? 'text-white bg-neutral-800'
-                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800/60'
                         }`}
                       >
                         <Pin className="w-3.5 h-3.5" />
@@ -488,7 +491,7 @@ export const NotesScreen: React.FC = () => {
                         type="button"
                         onClick={() => handleCopyNote(note.content)}
                         title="Copy note content"
-                        className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+                        className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800/60 transition-colors"
                       >
                         <Copy className="w-3.5 h-3.5" />
                       </button>
@@ -498,17 +501,17 @@ export const NotesScreen: React.FC = () => {
                         type="button"
                         onClick={() => handleStartEdit(note)}
                         title="Edit note"
-                        className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+                        className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800/60 transition-colors"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
 
-                      {/* Delete button: ALWAYS triggers confirmation prompt! */}
+                      {/* Delete button */}
                       <button
                         type="button"
                         onClick={() => deleteNote(note.id)}
                         title="Delete note"
-                        className="p-1.5 rounded-lg text-neutral-400 hover:text-red-400 hover:bg-neutral-800 transition-colors"
+                        className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-neutral-800/60 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -521,7 +524,7 @@ export const NotesScreen: React.FC = () => {
                   </p>
 
                   {/* Tags & timestamp footer */}
-                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-neutral-800/60 text-[10px] text-neutral-500 select-none">
+                  <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-neutral-850 text-xs text-neutral-500 select-none">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {note.tags && note.tags.length > 0 && (
                         <div className="flex items-center gap-1 flex-wrap">
@@ -530,7 +533,7 @@ export const NotesScreen: React.FC = () => {
                             <span
                               key={tag}
                               onClick={() => setSearchQuery(tag)}
-                              className="px-1.5 py-0.5 rounded bg-neutral-950 text-neutral-400 hover:text-white cursor-pointer transition-colors"
+                              className="px-2 py-0.5 rounded-md bg-neutral-900 text-neutral-400 hover:text-white cursor-pointer transition-colors text-[11px]"
                             >
                               #{tag}
                             </span>
@@ -539,7 +542,7 @@ export const NotesScreen: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 text-[11px] text-neutral-500">
                       <Calendar className="w-3 h-3" />
                       <span>{note.updatedAt || note.createdAt}</span>
                     </div>

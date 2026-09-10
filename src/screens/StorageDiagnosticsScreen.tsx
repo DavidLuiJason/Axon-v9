@@ -56,26 +56,26 @@ export const StorageDiagnosticsScreen: React.FC = () => {
   return (
     <div
       id="storage-diagnostics-screen"
-      className="flex-1 min-h-0 overflow-y-auto bg-black text-white p-4 sm:p-6 space-y-5 max-w-5xl mx-auto w-full"
+      className="flex-1 min-h-0 overflow-y-auto bg-black text-white p-4 sm:p-6 space-y-6 max-w-4xl mx-auto w-full"
     >
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-850">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-850">
         <div>
-          <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
+          <h1 className="text-base sm:text-lg font-semibold text-white tracking-tight">
             Storage & Asset Manifest
           </h1>
-          <p className="text-xs text-neutral-400 mt-0.5">
-            Per-item manifest tracking &bull; {formatBytes(storageBudget.budgetBytes, 0)} budget cap
+          <p className="text-xs text-neutral-400 mt-1">
+            Track cached offline assets, system models, and device storage cap ({formatBytes(storageBudget.budgetBytes, 0)} budget)
           </p>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             id="header-setup-budget-btn"
             type="button"
             onClick={() => openPanel('storage-onboarding')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-xs font-medium text-neutral-300 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 text-xs font-medium text-neutral-300 transition-colors"
           >
             <Sliders className="w-3.5 h-3.5 text-neutral-400" />
             <span>Budget Setup</span>
@@ -85,7 +85,7 @@ export const StorageDiagnosticsScreen: React.FC = () => {
             id="header-trim-btn"
             type="button"
             onClick={() => openPanel('storage-trim')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-xs font-medium text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 text-xs font-medium text-white transition-colors"
           >
             <Scissors className="w-3.5 h-3.5 text-neutral-300" />
             <span>Trim</span>
@@ -113,7 +113,7 @@ export const StorageDiagnosticsScreen: React.FC = () => {
       {staleItems.length > 0 && (
         <div
           id="stale-knowledge-banner"
-          className="p-3.5 rounded-2xl bg-neutral-900/90 border border-amber-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+          className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
         >
           <div className="flex items-start gap-2.5 text-neutral-200">
             <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
@@ -121,7 +121,7 @@ export const StorageDiagnosticsScreen: React.FC = () => {
               <p className="font-semibold text-white">
                 {staleItems.length} Cached Knowledge Base(s) Stale
               </p>
-              <p className="text-[11px] text-neutral-400 mt-0.5">
+              <p className="text-xs text-neutral-400 mt-0.5">
                 Upstream language references have updated since these items were cached.
               </p>
             </div>
@@ -144,10 +144,10 @@ export const StorageDiagnosticsScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveTab('manifest')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-colors ${
             activeTab === 'manifest'
               ? 'bg-white text-black font-semibold'
-              : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+              : 'text-neutral-400 hover:text-white hover:bg-neutral-900/60'
           }`}
         >
           <Database className="w-3.5 h-3.5" />
@@ -157,10 +157,10 @@ export const StorageDiagnosticsScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveTab('categories')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-colors ${
             activeTab === 'categories'
               ? 'bg-white text-black font-semibold'
-              : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+              : 'text-neutral-400 hover:text-white hover:bg-neutral-900/60'
           }`}
         >
           <Layers className="w-3.5 h-3.5" />
@@ -170,10 +170,10 @@ export const StorageDiagnosticsScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveTab('packs')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-colors ${
             activeTab === 'packs'
               ? 'bg-white text-black font-semibold'
-              : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+              : 'text-neutral-400 hover:text-white hover:bg-neutral-900/60'
           }`}
         >
           <BookOpen className="w-3.5 h-3.5" />

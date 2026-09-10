@@ -28,7 +28,7 @@ export const AssetManifestTable: React.FC<AssetManifestTableProps> = ({
   );
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Category Pill Filters */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
         {(['all', 'model', 'knowledge_pack', 'user_file', 'chat_history', 'cache', 'system'] as const).map(
@@ -37,10 +37,10 @@ export const AssetManifestTable: React.FC<AssetManifestTableProps> = ({
               key={cat}
               type="button"
               onClick={() => onSelectCategory(cat)}
-              className={`px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl transition-colors whitespace-nowrap text-xs ${
                 categoryFilter === cat
-                  ? 'bg-neutral-800 text-white font-semibold border border-neutral-700'
-                  : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+                  ? 'bg-neutral-800 text-white font-medium border border-neutral-700'
+                  : 'text-neutral-400 hover:text-white hover:bg-neutral-900/60 border border-transparent'
               }`}
             >
               {cat === 'all' ? 'All Assets' : cat.replace('_', ' ')}
@@ -50,52 +50,52 @@ export const AssetManifestTable: React.FC<AssetManifestTableProps> = ({
       </div>
 
       {filteredItems.length === 0 ? (
-        <div className="p-8 rounded-2xl bg-neutral-900/40 border border-neutral-800 text-center text-neutral-400 space-y-2">
+        <div className="p-8 rounded-2xl bg-neutral-900/30 border border-neutral-800/80 text-center text-neutral-400 space-y-2.5">
           <p className="text-xs">No assets registered in this category.</p>
           <button
             type="button"
             onClick={onOpenRegisterModal}
-            className="px-3 py-1.5 rounded-xl bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors"
+            className="px-3.5 py-1.5 rounded-xl bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors"
           >
             Register New Asset
           </button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="p-3.5 rounded-2xl bg-neutral-900/60 border border-neutral-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+              className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-850 hover:border-neutral-800 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 text-xs"
             >
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-white">{item.name}</span>
                   {item.isCore && (
-                    <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-300 border border-neutral-700">
+                    <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800">
                       <Shield className="w-2.5 h-2.5" /> Core
                     </span>
                   )}
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                    className={`text-[10px] px-2 py-0.5 rounded-full border ${
                       item.saveMode === 'archive'
-                        ? 'bg-emerald-950/70 text-emerald-300 border-emerald-800'
-                        : 'bg-amber-950/70 text-amber-300 border-amber-800'
+                        ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+                        : 'bg-amber-500/10 text-amber-300 border-amber-500/20'
                     }`}
                   >
                     {item.saveMode === 'archive' ? 'Archive (Lossless)' : 'Space-Saver (Lossy)'}
                   </span>
                   {item.knowledgeStatus === 'stale' && (
-                    <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
-                      <AlertCircle className="w-2.5 h-2.5" /> Stale Knowledge
+                    <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/20">
+                      <AlertCircle className="w-2.5 h-2.5" /> Stale
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] text-neutral-400 flex items-center gap-2">
+                <div className="text-xs text-neutral-400 flex items-center gap-2">
                   <span>{item.storageLocation}</span>
-                  <span>&bull;</span>
-                  <span className="font-mono text-white">{formatBytes(item.storedSizeBytes)}</span>
+                  <span className="text-neutral-600">&bull;</span>
+                  <span className="font-mono text-neutral-200">{formatBytes(item.storedSizeBytes)}</span>
                   {item.originalSizeBytes > item.storedSizeBytes && (
-                    <span className="text-neutral-500 line-through">
+                    <span className="text-neutral-500 line-through font-mono">
                       {formatBytes(item.originalSizeBytes)}
                     </span>
                   )}
@@ -113,7 +113,7 @@ export const AssetManifestTable: React.FC<AssetManifestTableProps> = ({
                     )
                   }
                   title="Toggle Save Mode"
-                  className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] text-neutral-300 transition-colors"
+                  className="px-2.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-xs text-neutral-300 hover:text-white border border-neutral-800 transition-colors"
                 >
                   {item.saveMode === 'archive' ? 'Make Space-Saver' : 'Make Archive'}
                 </button>
@@ -122,7 +122,7 @@ export const AssetManifestTable: React.FC<AssetManifestTableProps> = ({
                   type="button"
                   onClick={() => revertOrEnhanceAssetItem(item.id)}
                   title="Enhance approximation or restore lossless"
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 transition-colors"
+                  className="p-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-800 transition-colors"
                 >
                   <Wand2 className="w-3.5 h-3.5" />
                 </button>
@@ -132,7 +132,7 @@ export const AssetManifestTable: React.FC<AssetManifestTableProps> = ({
                     type="button"
                     onClick={() => deleteAssetFromManifest(item.id)}
                     title="Delete Asset"
-                    className="p-1.5 rounded-lg bg-neutral-800 hover:bg-rose-900/60 text-neutral-400 hover:text-rose-300 transition-colors"
+                    className="p-1.5 rounded-lg bg-neutral-900 hover:bg-rose-950 text-neutral-400 hover:text-rose-300 border border-neutral-800 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
