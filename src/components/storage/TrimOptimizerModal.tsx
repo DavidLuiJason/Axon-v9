@@ -3,6 +3,7 @@ import { X, Scissors, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { formatBytes } from '../../lib/storageManifest';
 import { TrimCategoryPriority } from '../../types';
+import { ModalOverlayContainer } from '../ModalOverlayContainer';
 
 interface TrimOptimizerModalProps {
   isOpen: boolean;
@@ -21,21 +22,27 @@ export const TrimOptimizerModal: React.FC<TrimOptimizerModalProps> = ({ isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-md rounded-2xl bg-neutral-900 border border-neutral-800 p-5 space-y-4 text-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-          <div className="flex items-center gap-2">
-            <Scissors className="w-4 h-4 text-neutral-300" />
-            <h2 className="text-sm font-bold">Trim Optimizer</h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onClose}
+      id="trim-optimizer-modal"
+      maxWidth="md"
+      ariaLabel="Trim Optimizer"
+      className="p-5 space-y-4"
+    >
+      <div className="flex items-center justify-between border-b border-neutral-800 pb-3 shrink-0">
+        <div className="flex items-center gap-2">
+          <Scissors className="w-4 h-4 text-neutral-300" />
+          <h2 className="text-sm font-bold">Trim Optimizer</h2>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
         {result ? (
           <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/80 text-center space-y-2">
@@ -82,7 +89,6 @@ export const TrimOptimizerModal: React.FC<TrimOptimizerModalProps> = ({ isOpen, 
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };

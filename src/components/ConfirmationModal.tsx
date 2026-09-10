@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, X, ShieldAlert, Clock } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { ModalOverlayContainer } from './ModalOverlayContainer';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -59,16 +60,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const isLocked = danger && remainingSeconds > 0;
 
   return (
-    <div
-      id="confirmation-modal-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150"
-      onClick={onCancel}
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onCancel}
+      id="confirmation-modal"
+      maxWidth="sm"
+      ariaLabel={title}
+      className="p-5 space-y-4 select-none"
     >
-      <div
-        id="confirmation-modal-container"
-        className="w-full max-w-sm rounded-2xl bg-neutral-900 border border-neutral-800 p-5 shadow-2xl text-white select-none space-y-4"
-        onClick={(e) => e.stopPropagation()}
-      >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div
@@ -152,7 +151,6 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             {isLocked ? `${confirmLabel} (${remainingSeconds}s)` : confirmLabel}
           </button>
         </div>
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };

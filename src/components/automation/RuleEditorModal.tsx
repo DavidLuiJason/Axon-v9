@@ -17,6 +17,7 @@ import {
   RuleActionType,
 } from '../../types';
 import { parsePlainLanguageRule } from '../../lib/automationEngine';
+import { ModalOverlayContainer } from '../ModalOverlayContainer';
 
 interface RuleEditorModalProps {
   isOpen: boolean;
@@ -196,43 +197,40 @@ export const RuleEditorModal: React.FC<RuleEditorModalProps> = ({
   };
 
   return (
-    <div
-      id="rule-editor-overlay"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150"
-      onClick={onClose}
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onClose}
+      id="rule-editor-modal"
+      maxWidth="lg"
+      ariaLabel={initialRule ? 'Edit Automation Rule' : 'New Automation Rule'}
     >
-      <div
-        id="rule-editor-modal"
-        className="w-full max-w-lg bg-neutral-950 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden text-white animate-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="p-4 border-b border-neutral-800/80 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-bold">
-              <Zap className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold tracking-tight">
-                {initialRule ? 'Edit Automation Rule' : 'New Automation Rule'}
-              </h3>
-              <p className="text-xs text-neutral-400">
-                Define simple conditional triggers ("if this happens, do this")
-              </p>
-            </div>
+      {/* Header */}
+      <div className="p-4 border-b border-neutral-800/80 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-bold">
+            <Zap className="w-4 h-4" />
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div>
+            <h3 className="text-base font-bold tracking-tight">
+              {initialRule ? 'Edit Automation Rule' : 'New Automation Rule'}
+            </h3>
+            <p className="text-xs text-neutral-400">
+              Define simple conditional triggers ("if this happens, do this")
+            </p>
+          </div>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
-        {/* Mode Switcher Tabs */}
-        <div className="px-4 pt-3 pb-2 border-b border-neutral-900 flex gap-2">
+      {/* Mode Switcher Tabs */}
+      <div className="px-4 pt-3 pb-2 border-b border-neutral-900 flex gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab('plain_language')}
@@ -260,7 +258,7 @@ export const RuleEditorModal: React.FC<RuleEditorModalProps> = ({
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+        <form onSubmit={handleSave} className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 text-xs">
           {activeTab === 'plain_language' ? (
             <div className="space-y-3">
               <div>
@@ -507,7 +505,6 @@ export const RuleEditorModal: React.FC<RuleEditorModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Image as ImageIcon,
   FileArchive,
@@ -1059,10 +1060,13 @@ const CollageZoomInspector: React.FC<CollageZoomInspectorProps> = ({
     isDraggingRef.current = false;
   };
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
       id="collage-zoom-modal"
-      className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col p-3 sm:p-4 select-none touch-none"
+      data-no-swipe="true"
+      className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col p-3 sm:p-4 select-none touch-none overflow-hidden isolate"
     >
       {/* Header controls */}
       <div className="flex items-center justify-between pb-3 border-b border-neutral-800 shrink-0">
@@ -1157,6 +1161,7 @@ const CollageZoomInspector: React.FC<CollageZoomInspectorProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

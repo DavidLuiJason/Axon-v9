@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { ProjectItem } from '../types';
+import { ModalOverlayContainer } from './ModalOverlayContainer';
 
 interface ProjectSwitcherModalProps {
   isOpen: boolean;
@@ -132,47 +133,38 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
   });
 
   return (
-    <div
-      id="project-switcher-overlay"
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200 cursor-pointer"
-      onClick={onClose}
-      onTouchEnd={(e) => {
-        if (e.target === e.currentTarget) {
-          e.preventDefault();
-          onClose();
-        }
-      }}
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onClose}
+      id="project-switcher-modal"
+      maxWidth="md"
+      ariaLabel="Project Workspaces"
     >
-      <div
-        id="project-switcher-modal"
-        className="w-full max-w-md bg-neutral-950 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] text-white cursor-default"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Modal Header */}
-        <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center">
-              <Folder className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold text-white">Project Workspaces</h2>
-              <p className="text-[11px] text-neutral-400">
-                Isolated context and memory scoping
-              </p>
-            </div>
+      {/* Modal Header */}
+      <div className="p-4 border-b border-neutral-800 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center">
+            <Folder className="w-4 h-4 text-white" />
           </div>
-          <button
-            id="close-project-modal-btn"
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div>
+            <h2 className="text-sm font-semibold text-white">Project Workspaces</h2>
+            <p className="text-[11px] text-neutral-400">
+              Isolated context and memory scoping
+            </p>
+          </div>
         </div>
+        <button
+          id="close-project-modal-btn"
+          type="button"
+          onClick={onClose}
+          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
-        {/* Content area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {/* Content area */}
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
           {/* Info pill about memory isolation */}
           <div className="p-3 rounded-xl bg-neutral-900/60 border border-neutral-800/80 flex items-start gap-2.5">
             <Info className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
@@ -396,7 +388,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-neutral-900 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
+        <div className="p-3 bg-neutral-900 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400 shrink-0">
           <span>Click any project to switch workspace</span>
           <button
             type="button"
@@ -406,7 +398,6 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
             Done
           </button>
         </div>
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };

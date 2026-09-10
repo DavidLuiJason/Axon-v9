@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, HardDrive } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { formatBytes } from '../../lib/storageManifest';
+import { ModalOverlayContainer } from '../ModalOverlayContainer';
 
 interface BudgetSettingModalProps {
   isOpen: boolean;
@@ -22,21 +23,27 @@ export const BudgetSettingModal: React.FC<BudgetSettingModalProps> = ({ isOpen, 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-md rounded-2xl bg-neutral-900 border border-neutral-800 p-5 space-y-4 text-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-          <div className="flex items-center gap-2">
-            <HardDrive className="w-4 h-4 text-neutral-300" />
-            <h2 className="text-sm font-bold">Storage Budget Configuration</h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onClose}
+      id="budget-setting-modal"
+      maxWidth="md"
+      ariaLabel="Storage Budget Configuration"
+      className="p-5 space-y-4"
+    >
+      <div className="flex items-center justify-between border-b border-neutral-800 pb-3 shrink-0">
+        <div className="flex items-center gap-2">
+          <HardDrive className="w-4 h-4 text-neutral-300" />
+          <h2 className="text-sm font-bold">Storage Budget Configuration</h2>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
 
         <div className="space-y-3">
           <label className="text-xs font-semibold text-neutral-300">Device Quota Presets</label>
@@ -81,7 +88,7 @@ export const BudgetSettingModal: React.FC<BudgetSettingModalProps> = ({ isOpen, 
           />
         </div>
 
-        <div className="pt-2 flex justify-end">
+        <div className="pt-2 flex justify-end shrink-0">
           <button
             type="button"
             onClick={onClose}
@@ -90,7 +97,6 @@ export const BudgetSettingModal: React.FC<BudgetSettingModalProps> = ({ isOpen, 
             Done
           </button>
         </div>
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };

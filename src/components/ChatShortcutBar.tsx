@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { ScreenId } from '../types';
 import { useApp } from '../context/AppContext';
+import { ModalOverlayContainer } from './ModalOverlayContainer';
 
 export interface ShortcutItem {
   id: string;
@@ -378,54 +379,40 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
         </div>
       </div>
 
-      {/* Edit & Create Shortcuts Modal (Fully self-contained, tap outside to exit) */}
-      {isEditModalOpen && (
-        <div
-          id="edit-shortcuts-overlay"
-          data-no-swipe="true"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
+      {/* Edit & Create Shortcuts Modal (Fully self-contained via ModalOverlayContainer) */}
+      <ModalOverlayContainer
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setIsCreatingCustom(false);
+        }}
+        id="edit-shortcuts-modal"
+        maxWidth="md"
+        ariaLabel="Customize Shortcuts"
+        className="p-4"
+      >
+        {/* Modal Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-neutral-800 shrink-0">
+          <div>
+            <h3 className="text-sm font-bold text-white tracking-wide">Customize Shortcuts</h3>
+            <p className="text-[11px] text-neutral-400 mt-0.5">
+              Select available shortcuts or build your own custom actions
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
               setIsEditModalOpen(false);
               setIsCreatingCustom(false);
-            }
-          }}
-          onTouchEnd={(e) => {
-            if (e.target === e.currentTarget) {
-              e.preventDefault();
-              setIsEditModalOpen(false);
-              setIsCreatingCustom(false);
-            }
-          }}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 select-none cursor-pointer"
-        >
-          <div
-            id="edit-shortcuts-modal"
-            data-no-swipe="true"
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm sm:max-w-md bg-neutral-950 border border-neutral-800 rounded-2xl p-4 shadow-2xl flex flex-col max-h-[85vh] text-white cursor-default"
+            }}
+            className="p-1.5 rounded-lg bg-neutral-900 text-neutral-400 hover:text-white"
           >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800 shrink-0">
-              <div>
-                <h3 className="text-sm font-bold text-white tracking-wide">Customize Shortcuts</h3>
-                <p className="text-[11px] text-neutral-400 mt-0.5">
-                  Select available shortcuts or build your own custom actions
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsEditModalOpen(false);
-                  setIsCreatingCustom(false);
-                }}
-                className="p-1.5 rounded-lg bg-neutral-900 text-neutral-400 hover:text-white"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
-            {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto py-3 space-y-4 pr-1">
+        {/* Modal Body */}
+        <div className="flex-1 min-h-0 overflow-y-auto py-3 space-y-4 pr-1">
               {/* Toggle Create Custom Shortcut Form */}
               {!isCreatingCustom ? (
                 <button
@@ -729,9 +716,7 @@ export const ChatShortcutBar: React.FC<ChatShortcutBarProps> = ({
                 Done
               </button>
             </div>
-          </div>
-        </div>
-      )}
+      </ModalOverlayContainer>
     </>
   );
 };

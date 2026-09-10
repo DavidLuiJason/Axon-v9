@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, FilePlus } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { AssetCategory, SaveMode } from '../../types';
+import { ModalOverlayContainer } from '../ModalOverlayContainer';
 
 interface RegisterAssetModalProps {
   isOpen: boolean;
@@ -39,12 +40,18 @@ export const RegisterAssetModal: React.FC<RegisterAssetModalProps> = ({ isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onClose}
+      id="register-asset-modal"
+      maxWidth="md"
+      ariaLabel="Register Asset in Manifest"
+    >
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-2xl bg-neutral-900 border border-neutral-800 p-5 space-y-4 text-white shadow-2xl"
+        className="p-5 space-y-4 text-white flex flex-col"
       >
-        <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+        <div className="flex items-center justify-between border-b border-neutral-800 pb-3 shrink-0">
           <div className="flex items-center gap-2">
             <FilePlus className="w-4 h-4 text-neutral-300" />
             <h2 className="text-sm font-bold">Register Asset in Manifest</h2>
@@ -127,7 +134,7 @@ export const RegisterAssetModal: React.FC<RegisterAssetModalProps> = ({ isOpen, 
           </div>
         </div>
 
-        <div className="pt-2 flex justify-end gap-2">
+        <div className="pt-2 flex justify-end gap-2 shrink-0">
           <button
             type="button"
             onClick={onClose}
@@ -143,6 +150,6 @@ export const RegisterAssetModal: React.FC<RegisterAssetModalProps> = ({ isOpen, 
           </button>
         </div>
       </form>
-    </div>
+    </ModalOverlayContainer>
   );
 };

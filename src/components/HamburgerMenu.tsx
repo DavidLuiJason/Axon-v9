@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   MessageSquare,
   Wrench,
@@ -179,10 +180,13 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
 
   const isInteractivelyDragging = dragOffset !== 0 || drawerGestureOffset !== null;
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
       id="hamburger-overlay"
-      className="fixed inset-0 z-50 flex bg-black/80 backdrop-blur-md transition-opacity duration-150 select-none cursor-pointer"
+      data-no-swipe="true"
+      className="fixed inset-0 z-50 flex bg-black/80 backdrop-blur-md transition-opacity duration-150 select-none cursor-pointer overflow-hidden isolate"
       style={{ opacity: backdropOpacity }}
       onClick={onClose}
       onTouchEnd={(e) => {
@@ -418,6 +422,7 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
         isOpen={isProjectModalOpen}
         onClose={() => closePanel('project-switcher')}
       />
-    </div>
+    </div>,
+    document.body
   );
 };

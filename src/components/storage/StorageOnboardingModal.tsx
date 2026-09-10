@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, HardDrive, ShieldCheck, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { ModalOverlayContainer } from '../ModalOverlayContainer';
 
 interface StorageOnboardingModalProps {
   isOpen: boolean;
@@ -24,28 +25,34 @@ export const StorageOnboardingModal: React.FC<StorageOnboardingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
-      <div className="w-full max-w-md rounded-3xl bg-neutral-900 border border-neutral-800 p-6 space-y-5 text-white shadow-2xl">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs">
-              15G
-            </div>
-            <div>
-              <h2 className="text-sm font-bold text-white">Storage Manifest Onboarding</h2>
-              <p className="text-[11px] text-neutral-400">Initialize device memory budget</p>
-            </div>
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={canDismiss ? onClose : () => {}}
+      id="storage-onboarding-modal"
+      maxWidth="md"
+      ariaLabel="Storage Manifest Onboarding"
+      className="p-6 space-y-5"
+    >
+      <div className="flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs">
+            15G
           </div>
-          {canDismiss && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-1 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
+          <div>
+            <h2 className="text-sm font-bold text-white">Storage Manifest Onboarding</h2>
+            <p className="text-[11px] text-neutral-400">Initialize device memory budget</p>
+          </div>
         </div>
+        {canDismiss && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
 
         <p className="text-xs text-neutral-300 leading-relaxed">
           AXON features a built-in <strong>15GB Storage Manifest</strong> engine designed for modern smartphones. It proactively manages disk usage, separates lossless archives from space-saving caches, and warns you before memory exhaustion occurs.
@@ -70,11 +77,10 @@ export const StorageOnboardingModal: React.FC<StorageOnboardingModalProps> = ({
           </button>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-neutral-400 pt-1">
+        <div className="flex items-center gap-2 text-[11px] text-neutral-400 pt-1 shrink-0">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
           <span>You can adjust this anytime in Settings &gt; Storage Diagnostics.</span>
         </div>
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };

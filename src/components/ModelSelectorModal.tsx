@@ -14,6 +14,7 @@ import {
 import { useApp } from '../context/AppContext';
 import { isAccountInCooldown, getRemainingCooldownString } from '../lib/aiConfig';
 import { AIProvider } from '../types';
+import { ModalOverlayContainer } from './ModalOverlayContainer';
 
 interface ModelSelectorModalProps {
   isOpen: boolean;
@@ -65,35 +66,33 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({ isOpen, 
   };
 
   return (
-    <div
+    <ModalOverlayContainer
+      isOpen={isOpen}
+      onClose={onClose}
       id="model-selector-modal"
-      data-no-swipe="true"
-      className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-4 select-none overflow-hidden max-w-full"
-      onClick={onClose}
+      maxWidth="md"
+      ariaLabel="AI Model and Account Selector"
+      className="p-4 sm:p-5 space-y-4"
     >
-      <div
-        className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4 max-h-[90%] sm:max-h-[85vh] flex flex-col mx-auto overflow-hidden animate-in fade-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-neutral-800/80 pb-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-white" />
-            <div>
-              <h3 className="text-sm font-bold text-white">AI Model & Account Engine</h3>
-              <p className="text-[11px] text-neutral-400">Official API connections & session routing</p>
-            </div>
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-neutral-800/80 pb-3 shrink-0">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-white" />
+          <div>
+            <h3 className="text-sm font-bold text-white">AI Model & Account Engine</h3>
+            <p className="text-[11px] text-neutral-400">Official API connections & session routing</p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
-            title="Close Model Engine"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+          title="Close Model Engine"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
 
         {/* Provider Filter Tabs */}
         <div className="flex items-center gap-1.5 p-1 bg-neutral-950 rounded-xl border border-neutral-800 shrink-0">
@@ -121,7 +120,7 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({ isOpen, 
           ))}
         </div>
 
-        <div className="overflow-y-auto space-y-4 pr-1 flex-1">
+        <div className="overflow-y-auto space-y-4 pr-1 flex-1 min-h-0">
           {/* Models List */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">
@@ -283,7 +282,7 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({ isOpen, 
         </div>
 
         {/* Footer info */}
-        <div className="pt-2 border-t border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400">
+        <div className="pt-2 border-t border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400 shrink-0">
           <span>Official API routing • Zero website automation</span>
           <button
             type="button"
@@ -293,7 +292,6 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({ isOpen, 
             Done
           </button>
         </div>
-      </div>
-    </div>
+    </ModalOverlayContainer>
   );
 };
