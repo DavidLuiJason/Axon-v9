@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SwipeableTabContainer } from './SwipeableTabContainer';
 import {
   FileCode2,
   Play,
@@ -141,64 +142,75 @@ export async function bootAxonSession() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-3 bg-black">
-        {activeTab === 'code' && (
-          <div className="rounded-xl bg-neutral-950 border border-neutral-800/80 p-3 font-mono text-xs text-neutral-300 leading-relaxed overflow-x-auto">
-            <div className="flex select-none text-neutral-600 mb-2 pb-2 border-b border-neutral-900 justify-between items-center text-[10px]">
-              <span>UTF-8 • JavaScript (ESM)</span>
-              <span>18 lines • 412 B</span>
-            </div>
-            <pre className="text-neutral-200 font-mono text-[11px] sm:text-xs">
-              <code>
-                {sampleCode.split('\n').map((line, idx) => (
-                  <div key={idx} className="flex gap-3 hover:bg-neutral-900/60 py-0.5 px-1 rounded">
-                    <span className="w-6 text-right text-neutral-600 select-none text-[11px]">
-                      {idx + 1}
-                    </span>
-                    <span className="flex-1 whitespace-pre-wrap">{line}</span>
-                  </div>
-                ))}
-              </code>
-            </pre>
-          </div>
-        )}
-
-        {activeTab === 'preview' && (
-          <div className="h-full flex flex-col items-center justify-center p-4 text-center rounded-xl bg-neutral-950 border border-neutral-800">
-            <div className="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
-              <Sparkles className="w-6 h-6 text-neutral-200" />
-            </div>
-            <h3 className="text-sm font-semibold text-white mb-1">AXON Preview Canvas</h3>
-            <p className="text-xs text-neutral-400 max-w-xs mb-4">
-              Live workspace preview shell. Generated apps, UI components, and artifacts will render here.
-            </p>
-            <div className="p-3 w-full max-w-xs rounded-xl bg-neutral-900/80 border border-neutral-800 text-left text-xs text-neutral-300">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-semibold text-white">Kernel Status</span>
-                <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Active</span>
+      <div className="flex-1 min-h-0 bg-black overflow-hidden">
+        <SwipeableTabContainer<'code' | 'preview' | 'terminal'>
+          tabs={['code', 'preview', 'terminal'] as const}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          fitHeight={true}
+          className="h-full min-h-0"
+        >
+          {/* TAB 1: CODE */}
+          <div className="h-full min-h-0 overflow-y-auto p-3">
+            <div className="rounded-xl bg-neutral-950 border border-neutral-800/80 p-3 font-mono text-xs text-neutral-300 leading-relaxed overflow-x-auto">
+              <div className="flex select-none text-neutral-600 mb-2 pb-2 border-b border-neutral-900 justify-between items-center text-[10px]">
+                <span>UTF-8 • JavaScript (ESM)</span>
+                <span>18 lines • 412 B</span>
               </div>
-              <p className="text-[11px] text-neutral-400">Target: Low-spec mobile (4GB RAM) optimized runtime container.</p>
+              <pre className="text-neutral-200 font-mono text-[11px] sm:text-xs">
+                <code>
+                  {sampleCode.split('\n').map((line, idx) => (
+                    <div key={idx} className="flex gap-3 hover:bg-neutral-900/60 py-0.5 px-1 rounded">
+                      <span className="w-6 text-right text-neutral-600 select-none text-[11px]">
+                        {idx + 1}
+                      </span>
+                      <span className="flex-1 whitespace-pre-wrap">{line}</span>
+                    </div>
+                  ))}
+                </code>
+              </pre>
             </div>
           </div>
-        )}
 
-        {activeTab === 'terminal' && (
-          <div className="h-full rounded-xl bg-neutral-950 border border-neutral-800 p-3 font-mono text-xs text-neutral-300">
-            <div className="text-[11px] text-neutral-500 mb-2 select-none flex items-center justify-between">
-              <span>AXON Shell Terminal v0.1</span>
-              <span>tty1</span>
-            </div>
-            <div className="space-y-1 text-emerald-400 text-[11px]">
-              <p className="text-neutral-400">$ axon --version</p>
-              <p>axon-core 0.1.0-alpha (arm64-linux)</p>
-              <p className="text-neutral-400">$ axon kernel:check</p>
-              <p>✔ Dual-pane orchestrator mounted</p>
-              <p>✔ Memory cache pinned: 4.2 MB / 4096 MB</p>
-              <p>✔ Zero unnecessary background daemons</p>
-              <p className="text-white mt-3 animate-pulse">_</p>
+          {/* TAB 2: PREVIEW */}
+          <div className="h-full min-h-0 overflow-y-auto p-3">
+            <div className="h-full flex flex-col items-center justify-center p-4 text-center rounded-xl bg-neutral-950 border border-neutral-800">
+              <div className="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3">
+                <Sparkles className="w-6 h-6 text-neutral-200" />
+              </div>
+              <h3 className="text-sm font-semibold text-white mb-1">AXON Preview Canvas</h3>
+              <p className="text-xs text-neutral-400 max-w-xs mb-4">
+                Live workspace preview shell. Generated apps, UI components, and artifacts will render here.
+              </p>
+              <div className="p-3 w-full max-w-xs rounded-xl bg-neutral-900/80 border border-neutral-800 text-left text-xs text-neutral-300">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-white">Kernel Status</span>
+                  <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Active</span>
+                </div>
+                <p className="text-[11px] text-neutral-400">Target: Low-spec mobile (4GB RAM) optimized runtime container.</p>
+              </div>
             </div>
           </div>
-        )}
+
+          {/* TAB 3: TERMINAL */}
+          <div className="h-full min-h-0 overflow-y-auto p-3">
+            <div className="h-full rounded-xl bg-neutral-950 border border-neutral-800 p-3 font-mono text-xs text-neutral-300">
+              <div className="text-[11px] text-neutral-500 mb-2 select-none flex items-center justify-between">
+                <span>AXON Shell Terminal v0.1</span>
+                <span>tty1</span>
+              </div>
+              <div className="space-y-1 text-emerald-400 text-[11px]">
+                <p className="text-neutral-400">$ axon --version</p>
+                <p>axon-core 0.1.0-alpha (arm64-linux)</p>
+                <p className="text-neutral-400">$ axon kernel:check</p>
+                <p>✔ Dual-pane orchestrator mounted</p>
+                <p>✔ Memory cache pinned: 4.2 MB / 4096 MB</p>
+                <p>✔ Zero unnecessary background daemons</p>
+                <p className="text-white mt-3 animate-pulse">_</p>
+              </div>
+            </div>
+          </div>
+        </SwipeableTabContainer>
       </div>
 
       {/* Footer Info bar */}

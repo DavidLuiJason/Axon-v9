@@ -203,9 +203,7 @@ export const ColorToolsScreen: React.FC = () => {
           activeTab={activeTab}
           onTabChange={setActiveTab}
         >
-          <div>
-            {/* TAB 1: COLOR PICKER */}
-            {activeTab === 'picker' && (
+          {/* TAB 1: COLOR PICKER */}
           <div className="space-y-4">
             {/* Color preview card */}
             <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-4 space-y-4">
@@ -328,10 +326,8 @@ export const ColorToolsScreen: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
 
-        {/* TAB 2: PALETTE GENERATOR */}
-        {activeTab === 'palette' && (
+          {/* TAB 2: PALETTE GENERATOR */}
           <div className="space-y-4">
             {/* Active Palette Display */}
             <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-4 space-y-3">
@@ -446,8 +442,6 @@ export const ColorToolsScreen: React.FC = () => {
                 ))}
               </div>
             </div>
-          </div>
-        )}
           </div>
         </SwipeableTabContainer>
       </div>

@@ -153,14 +153,18 @@ export const ToolsMenuScreen: React.FC = () => {
     },
   ];
 
-  const filteredCategories = toolCategories.filter((cat) => {
-    const matchesCategory = selectedCategory === 'all' || cat.id === selectedCategory;
-    const matchesSearch =
-      cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cat.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cat.items.some((item) => item.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
+  const categoryTabs = ['all', 'text', 'calc', 'color', 'image', 'file'] as const;
+
+  const getFilteredCategories = (catId: string) => {
+    return toolCategories.filter((cat) => {
+      const matchesCategory = catId === 'all' || cat.id === catId;
+      const matchesSearch =
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cat.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cat.items.some((item) => item.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesCategory && matchesSearch;
+    });
+  };
 
   return (
     <div
@@ -215,62 +219,67 @@ export const ToolsMenuScreen: React.FC = () => {
 
         {/* Categories Tool Cards with swipe support */}
         <SwipeableTabContainer<string>
-          tabs={['all', 'text', 'calc', 'color', 'image', 'file']}
+          tabs={categoryTabs}
           activeTab={selectedCategory}
           onTabChange={setSelectedCategory}
         >
-          <div className="space-y-3">
-            {filteredCategories.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <div
-                  key={cat.id}
-                  id={`tool-suite-${cat.id}`}
-                  onClick={() => navigateTo(cat.screen)}
-                  className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-850 active:scale-[0.99] cursor-pointer transition-all space-y-3 group"
-                >
-                  {/* Header row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center text-neutral-300 group-hover:text-white group-hover:bg-neutral-700 transition-colors">
-                        <Icon className="w-5 h-5" />
+          {categoryTabs.map((catId) => {
+            const list = getFilteredCategories(catId);
+            return (
+              <div key={catId} className="space-y-3">
+                {list.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <div
+                      key={cat.id}
+                      id={`tool-suite-${cat.id}`}
+                      onClick={() => navigateTo(cat.screen)}
+                      className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-850 active:scale-[0.99] cursor-pointer transition-all space-y-3 group"
+                    >
+                      {/* Header row */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center text-neutral-300 group-hover:text-white group-hover:bg-neutral-700 transition-colors">
+                            <Icon className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                              <span>{cat.name}</span>
+                              <span className="text-[10px] font-normal px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-300 font-mono">
+                                {cat.badge}
+                              </span>
+                            </h3>
+                            <p className="text-xs text-neutral-400 mt-0.5 leading-snug">
+                              {cat.description}
+                            </p>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <span>{cat.name}</span>
-                          <span className="text-[10px] font-normal px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-300 font-mono">
-                            {cat.badge}
+
+                      {/* Sub-item pills list */}
+                      <div className="flex flex-wrap gap-1.5 pt-1 border-t border-neutral-800/60">
+                        {cat.items.map((item, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 rounded-lg bg-neutral-950/80 border border-neutral-800/80 text-[11px] text-neutral-300"
+                          >
+                            {item}
                           </span>
-                        </h3>
-                        <p className="text-xs text-neutral-400 mt-0.5 leading-snug">
-                          {cat.description}
-                        </p>
+                        ))}
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-                  </div>
+                  );
+                })}
 
-                  {/* Sub-item pills list */}
-                  <div className="flex flex-wrap gap-1.5 pt-1 border-t border-neutral-800/60">
-                    {cat.items.map((item, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 rounded-lg bg-neutral-950/80 border border-neutral-800/80 text-[11px] text-neutral-300"
-                      >
-                        {item}
-                      </span>
-                    ))}
+                {list.length === 0 && (
+                  <div className="text-center py-10 rounded-2xl bg-neutral-900/50 border border-neutral-800">
+                    <p className="text-xs text-neutral-400">No tools found matching "{searchQuery}"</p>
                   </div>
-                </div>
-              );
-            })}
-
-            {filteredCategories.length === 0 && (
-              <div className="text-center py-10 rounded-2xl bg-neutral-900/50 border border-neutral-800">
-                <p className="text-xs text-neutral-400">No tools found matching "{searchQuery}"</p>
+                )}
               </div>
-            )}
-          </div>
+            );
+          })}
         </SwipeableTabContainer>
 
         {/* Target Device Note Callout */}

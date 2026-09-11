@@ -3,6 +3,7 @@ import { Zap, Plus, Sliders, CheckCircle2, Play, Trash2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AutomationSimulatorView } from '../components/automation/AutomationSimulatorView';
 import { RuleEditorModal } from '../components/automation/RuleEditorModal';
+import { SwipeableTabContainer } from '../components/SwipeableTabContainer';
 import { AutomationRule } from '../types';
 
 export const AutomationScreen: React.FC = () => {
@@ -82,9 +83,11 @@ export const AutomationScreen: React.FC = () => {
         </button>
       </div>
 
-      {activeTab === 'simulator' ? (
-        <AutomationSimulatorView />
-      ) : (
+      <SwipeableTabContainer<'rules' | 'simulator'>
+        tabs={['rules', 'simulator'] as const}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      >
         <div className="space-y-3">
           {automationRules.length === 0 ? (
             <div className="p-8 text-center text-neutral-400 rounded-2xl bg-neutral-900/40 border border-neutral-800 text-xs">
@@ -146,7 +149,11 @@ export const AutomationScreen: React.FC = () => {
             ))
           )}
         </div>
-      )}
+
+        <div>
+          <AutomationSimulatorView />
+        </div>
+      </SwipeableTabContainer>
 
       <RuleEditorModal
         isOpen={isModalOpen}

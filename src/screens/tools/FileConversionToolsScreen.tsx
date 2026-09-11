@@ -337,9 +337,7 @@ export const FileConversionToolsScreen: React.FC = () => {
           activeTab={activeTab}
           onTabChange={setActiveTab}
         >
-          <div>
-            {/* --- 1. PNG TO PDF --- */}
-            {activeTab === 'png2pdf' && (
+          {/* --- 1. PNG TO PDF --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">PNG to PDF Converter</h3>
@@ -454,10 +452,8 @@ export const FileConversionToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* --- 2. PDF TO TEXT --- */}
-        {activeTab === 'pdf2txt' && (
+          {/* --- 2. PDF TO TEXT --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">PDF to Text Extractor</h3>
@@ -536,10 +532,8 @@ export const FileConversionToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* --- 3. CSV <-> JSON --- */}
-        {activeTab === 'csvjson' && (
+          {/* --- 3. CSV <-> JSON --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">CSV ⇄ JSON Converter</h3>
@@ -634,10 +628,8 @@ export const FileConversionToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* --- 4. TXT TO PDF --- */}
-        {activeTab === 'txt2pdf' && (
+          {/* --- 4. TXT TO PDF --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">Text to PDF Document</h3>
@@ -676,8 +668,6 @@ export const FileConversionToolsScreen: React.FC = () => {
               <Download className="w-4 h-4" />
               <span>Download PDF File</span>
             </button>
-          </div>
-        )}
           </div>
         </SwipeableTabContainer>
       </div>

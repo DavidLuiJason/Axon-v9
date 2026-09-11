@@ -445,9 +445,7 @@ export const ImageToolsScreen: React.FC = () => {
           activeTab={activeSubTab}
           onTabChange={setActiveSubTab}
         >
-          <div>
-            {/* --- SUBTAB 1: FORMAT CONVERTER --- */}
-            {activeSubTab === 'convert' && (
+          {/* --- SUBTAB 1: FORMAT CONVERTER --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">Image Format Converter</h3>
@@ -547,10 +545,8 @@ export const ImageToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* --- SUBTAB 2: COMPRESSOR --- */}
-        {activeSubTab === 'compress' && (
+          {/* --- SUBTAB 2: COMPRESSOR --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">Image Compressor</h3>
@@ -693,10 +689,8 @@ export const ImageToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* --- SUBTAB 3: BLUR TOOL --- */}
-        {activeSubTab === 'blur' && (
+          {/* --- SUBTAB 3: BLUR TOOL --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">Image Blur Tool</h3>
@@ -767,10 +761,8 @@ export const ImageToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* --- SUBTAB 4: COLLAGE GRID --- */}
-        {activeSubTab === 'collage' && (
+          {/* --- SUBTAB 4: COLLAGE GRID --- */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-4">
             <div>
               <h3 className="text-sm font-semibold text-white">Collage Grid Maker</h3>
@@ -992,8 +984,6 @@ export const ImageToolsScreen: React.FC = () => {
                 <span className="text-[10px] text-neutral-500 mt-0.5">Generates clean grid layout automatically</span>
               </button>
             )}
-          </div>
-        )}
           </div>
         </SwipeableTabContainer>
       </div>

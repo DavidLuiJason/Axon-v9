@@ -43,7 +43,8 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
   const [isWorkspaceExpanded, setIsWorkspaceExpanded] = useState(false);
 
   // Real-time gesture drag tracking for drawer (iOS / ChatGPT style)
-  const [dragOffset, setDragOffset] = useState(0);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const touchStartTimeRef = useRef<number>(0);
@@ -51,6 +52,9 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
+      if (drawerRef.current) {
+        drawerRef.current.style.transition = 'none';
+      }
       touchStartXRef.current = e.touches[0].clientX;
       touchStartYRef.current = e.touches[0].clientY;
       touchStartTimeRef.current = Date.now();
@@ -76,12 +80,16 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
     }
 
     if (isHorizontalGestureRef.current) {
+      if (e.cancelable) e.preventDefault();
       // Drawer can only be dragged left to close
-      if (diffX <= 0) {
-        setDragOffset(diffX);
-      } else {
-        // Elastic resistance if dragging right
-        setDragOffset(diffX * 0.15);
+      const effectiveX = diffX <= 0 ? diffX : diffX * 0.15;
+
+      // Direct DOM update on compositor thread (zero React re-renders)
+      if (drawerRef.current && overlayRef.current) {
+        drawerRef.current.style.transition = 'none';
+        drawerRef.current.style.transform = `translate3d(${effectiveX}px, 0, 0)`;
+        overlayRef.current.style.transition = 'none';
+        overlayRef.current.style.opacity = `${Math.max(0, Math.min(1, 1 + effectiveX / 300))}`;
       }
     }
   };
@@ -97,14 +105,23 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
     const shouldClose = diffX < -60 || (velocity < -0.35 && diffX < -25);
 
     if (shouldClose) {
-      setDragOffset(-320);
+      if (drawerRef.current && overlayRef.current) {
+        drawerRef.current.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
+        drawerRef.current.style.transform = 'translate3d(-320px, 0, 0)';
+        overlayRef.current.style.transition = 'opacity 0.22s ease-out';
+        overlayRef.current.style.opacity = '0';
+      }
       setTimeout(() => {
         onClose();
-        setDragOffset(0);
-      }, 180);
+      }, 200);
     } else {
       // Springs back smoothly to origin
-      setDragOffset(0);
+      if (drawerRef.current && overlayRef.current) {
+        drawerRef.current.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
+        drawerRef.current.style.transform = 'translate3d(0px, 0, 0)';
+        overlayRef.current.style.transition = 'opacity 0.22s ease-out';
+        overlayRef.current.style.opacity = '1';
+      }
     }
 
     touchStartXRef.current = null;
@@ -171,23 +188,29 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
   };
 
   const effectiveTranslateX = isOpen
-    ? dragOffset
+    ? 0
     : -320 + Math.min(320, Math.max(0, drawerGestureOffset || 0));
 
   const backdropOpacity = isOpen
-    ? Math.max(0, Math.min(1, 1 + dragOffset / 300))
+    ? 1
     : Math.max(0, Math.min(1, (drawerGestureOffset || 0) / 320));
 
-  const isInteractivelyDragging = dragOffset !== 0 || drawerGestureOffset !== null;
+  const isInteractivelyDragging = drawerGestureOffset !== null;
 
   if (typeof document === 'undefined') return null;
 
   return createPortal(
     <div
+      ref={overlayRef}
       id="hamburger-overlay"
       data-no-swipe="true"
       className="fixed inset-0 z-50 flex bg-black/80 backdrop-blur-md transition-opacity duration-150 select-none cursor-pointer overflow-hidden isolate"
-      style={{ opacity: backdropOpacity }}
+      style={{
+        opacity: backdropOpacity,
+        isolation: 'isolate',
+        WebkitBackfaceVisibility: 'hidden',
+        backfaceVisibility: 'hidden',
+      }}
       onClick={onClose}
       onTouchEnd={(e) => {
         if (e.target === e.currentTarget) {
@@ -197,6 +220,7 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
       }}
     >
       <div
+        ref={drawerRef}
         id="hamburger-drawer"
         onTouchStart={(e) => {
           e.stopPropagation();
@@ -205,16 +229,29 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onTouchCancel={() => {
-          setDragOffset(0);
           touchStartXRef.current = null;
+          if (drawerRef.current && overlayRef.current) {
+            drawerRef.current.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
+            drawerRef.current.style.transform = 'translate3d(0px, 0, 0)';
+            overlayRef.current.style.transition = 'opacity 0.22s ease-out';
+            overlayRef.current.style.opacity = '1';
+          }
         }}
         style={{
           transform: `translate3d(${effectiveTranslateX}px, 0, 0)`,
           transition: isInteractivelyDragging
             ? 'none'
             : 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)',
+          willChange: 'transform',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+          WebkitTransformStyle: 'flat',
+          transformStyle: 'flat',
+          isolation: 'isolate',
+          contain: 'layout paint',
+          backgroundColor: '#0a0a0a',
         }}
-        className="w-80 max-w-[85vw] h-full bg-neutral-950 border-r border-neutral-800 flex flex-col shadow-2xl text-white select-none will-change-transform cursor-default"
+        className="w-80 max-w-[85vw] h-full bg-neutral-950 border-r border-neutral-800 flex flex-col shadow-2xl text-white select-none cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with App Branding and active App Icon */}

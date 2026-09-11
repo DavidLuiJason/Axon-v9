@@ -265,9 +265,7 @@ export const TextToolsScreen: React.FC = () => {
           activeTab={activeSubTab}
           onTabChange={setActiveSubTab}
         >
-          <div>
-            {/* SUBTAB 1: WORD & CHARACTER COUNTER */}
-            {activeSubTab === 'counter' && (
+          {/* SUBTAB 1: WORD & CHARACTER COUNTER */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
               Text Statistics
@@ -295,10 +293,8 @@ export const TextToolsScreen: React.FC = () => {
               <span className="font-semibold text-white">~{readTimeSeconds} sec</span>
             </div>
           </div>
-        )}
 
-        {/* SUBTAB 2: CASE CONVERTERS */}
-        {activeSubTab === 'case' && (
+          {/* SUBTAB 2: CASE CONVERTERS */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
               Case Transformations
@@ -330,10 +326,8 @@ export const TextToolsScreen: React.FC = () => {
               ))}
             </div>
           </div>
-        )}
 
-        {/* SUBTAB 3: STYLISH / DECORATIVE TEXT */}
-        {activeSubTab === 'stylish' && (
+          {/* SUBTAB 3: STYLISH / DECORATIVE TEXT */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
               Decorative Unicode Styles
@@ -367,10 +361,8 @@ export const TextToolsScreen: React.FC = () => {
               })}
             </div>
           </div>
-        )}
 
-        {/* SUBTAB 4: DUPLICATE REMOVER */}
-        {activeSubTab === 'dedup' && (
+          {/* SUBTAB 4: DUPLICATE REMOVER */}
           <div className="rounded-2xl bg-neutral-900/90 border border-neutral-800 p-4 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
               Duplicate Redundancy Cleaners
@@ -397,8 +389,6 @@ export const TextToolsScreen: React.FC = () => {
                 <span className="text-[10px] text-neutral-400 mt-0.5 block">Cleans repeated tokens</span>
               </button>
             </div>
-          </div>
-        )}
           </div>
         </SwipeableTabContainer>
       </div>

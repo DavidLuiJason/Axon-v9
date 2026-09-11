@@ -227,30 +227,35 @@ export const SettingsScreen: React.FC = () => {
           onTabChange={setActiveTab}
         >
           {/* TAB 1: AI Accounts & Keys */}
-          {activeTab === 'ai' && <AIAccountsSettings />}
+          <div>
+            <AIAccountsSettings />
+          </div>
 
-        {/* TAB 2: Appearance */}
-        {activeTab === 'appearance' && (
+          {/* TAB 2: Appearance */}
           <div className="space-y-6">
-            {/* SECTION 1: Interface Theme & Accent */}
-            <div className="rounded-2xl bg-neutral-900/40 border border-neutral-800/80 p-5 space-y-5">
-              <div className="flex items-center gap-2.5">
-                <Palette className="w-4 h-4 text-neutral-300" />
-                <div>
-                  <h3 className="text-sm font-semibold text-white">Visual Design & Theme</h3>
-                  <p className="text-xs text-neutral-400">Claude-inspired monochrome dark aesthetic with custom accents</p>
+            {/* SECTION 1: Visual Design & Theme */}
+            <div className="rounded-2xl bg-neutral-900/40 border border-neutral-800/80 p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <Palette className="w-4 h-4 text-neutral-300" />
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">Visual Design & Theme</h3>
+                    <p className="text-xs text-neutral-400">
+                      Claude-inspired monochrome dark aesthetic with custom accents
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Light / Dark Mode Toggle */}
+              {/* Color Mode Row */}
               <div className="flex items-center justify-between pt-1">
                 <div>
-                  <p className="text-xs font-medium text-neutral-200">Color Mode</p>
+                  <p className="text-xs font-semibold text-white">Color Mode</p>
                   <p className="text-[11px] text-neutral-400">
                     Switch between deep dark and light workspace modes
                   </p>
                 </div>
-                <div className="flex items-center bg-neutral-950 p-1 rounded-xl border border-neutral-800">
+                <div className="flex items-center bg-neutral-950 p-1 rounded-xl border border-neutral-850">
                   <button
                     type="button"
                     onClick={() => setThemeMode('dark')}
@@ -278,10 +283,15 @@ export const SettingsScreen: React.FC = () => {
                 </div>
               </div>
 
-              {/* Accent Color Swatches */}
+              {/* Accent Highlight Row */}
               <div className="pt-3 border-t border-neutral-800/60">
                 <div className="flex items-center justify-between mb-2.5">
-                  <p className="text-xs font-medium text-neutral-200">Accent Highlight</p>
+                  <div>
+                    <p className="text-xs font-semibold text-white">Accent Highlight</p>
+                    <p className="text-[11px] text-neutral-400">
+                      Primary brand highlight and interactive focus color
+                    </p>
+                  </div>
                   <span className="text-[11px] text-neutral-400 font-mono">
                     {theme.accentColor || '#ffffff'}
                   </span>
@@ -319,7 +329,7 @@ export const SettingsScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* SECTION 2: Chat Bubbles & Action Button Colors */}
+            {/* SECTION 2: Chat Bubbles & Action Buttons */}
             <div className="rounded-2xl bg-neutral-900/40 border border-neutral-800/80 p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -365,7 +375,7 @@ export const SettingsScreen: React.FC = () => {
                 return (
                   <div className="space-y-4">
                     {/* Smart Contrast Guard */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80">
+                    <div className="flex items-center justify-between pt-1">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-neutral-800/80 text-emerald-400">
                           <ShieldCheck className="w-4 h-4" />
@@ -387,7 +397,7 @@ export const SettingsScreen: React.FC = () => {
                         onClick={() =>
                           setFunctionColor('messageButtonAutoContrast' as any, (!autoContrast) as any)
                         }
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 shrink-0 ${
+                        className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 shrink-0 ${
                           autoContrast
                             ? 'bg-white text-black hover:bg-neutral-200'
                             : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
@@ -398,16 +408,138 @@ export const SettingsScreen: React.FC = () => {
                       </button>
                     </div>
 
-                    {/* User Message Bubble Setting */}
-                    <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800/80 space-y-3">
+                    {/* Live Message Preview (Unified, non-overlapping, realistic chat thread) */}
+                    <div className="pt-3 border-t border-neutral-800/60 space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300">
-                            <User className="w-4 h-4" />
+                        <div className="flex items-center gap-1.5 text-xs text-neutral-300 font-medium">
+                          <Eye className="w-3.5 h-3.5 text-neutral-400" />
+                          <span>Live Message Preview</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFunctionColor('userMsgBtnColor', getAutoContrastColor(userBubbleBg));
+                            setFunctionColor('axonMsgBtnColor', getAutoContrastColor(axonBubbleBg));
+                            showToast('Applied optimal contrast for all message buttons');
+                          }}
+                          className="text-[11px] text-neutral-300 hover:text-white underline underline-offset-2"
+                        >
+                          Set Optimal Contrast
+                        </button>
+                      </div>
+
+                      <div className="rounded-xl bg-neutral-950/60 border border-neutral-800/80 p-3.5 space-y-3">
+                        {/* User Message Bubble */}
+                        <div className="flex justify-end">
+                          <div
+                            style={{ backgroundColor: userBubbleBg }}
+                            className="w-full max-w-[88%] rounded-2xl rounded-br-sm p-3 shadow-sm transition-colors"
+                          >
+                            <p
+                              className="text-xs font-normal leading-relaxed break-words whitespace-normal"
+                              style={{
+                                color: getContrastRatio('#ffffff', userBubbleBg) >= 3.5 ? '#ffffff' : '#000000',
+                              }}
+                            >
+                              Can you see these action buttons clearly?
+                            </p>
+                            <div
+                              className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t text-[10px]"
+                              style={{
+                                borderColor:
+                                  getContrastRatio('#ffffff', userBubbleBg) >= 3.5
+                                    ? 'rgba(255,255,255,0.15)'
+                                    : 'rgba(0,0,0,0.12)',
+                              }}
+                            >
+                              <span
+                                className="font-mono text-[10px] shrink-0"
+                                style={{
+                                  color:
+                                    getContrastRatio('#ffffff', userBubbleBg) >= 3.5
+                                      ? 'rgba(255,255,255,0.7)'
+                                      : 'rgba(0,0,0,0.6)',
+                                }}
+                              >
+                                10:42 AM
+                              </span>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Read aloud">
+                                  <Volume2 className="w-3 h-3" />
+                                </span>
+                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Copy text">
+                                  <Copy className="w-3 h-3" />
+                                </span>
+                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Bookmark">
+                                  <BookmarkPlus className="w-3 h-3" />
+                                </span>
+                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Delete">
+                                  <Trash2 className="w-3 h-3" />
+                                </span>
+                              </div>
+                            </div>
                           </div>
+                        </div>
+
+                        {/* AI (AXON) Message Bubble */}
+                        <div className="flex justify-start">
+                          <div
+                            style={{ backgroundColor: axonBubbleBg }}
+                            className="w-full max-w-[88%] rounded-2xl rounded-bl-sm p-3 shadow-sm border border-neutral-800/60 transition-colors"
+                          >
+                            <p
+                              className="text-xs font-normal leading-relaxed break-words whitespace-normal"
+                              style={{
+                                color: getContrastRatio('#ffffff', axonBubbleBg) >= 3.5 ? '#f5f5f5' : '#171717',
+                              }}
+                            >
+                              All action buttons are crystal clear and contrast-verified.
+                            </p>
+                            <div
+                              className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t text-[10px]"
+                              style={{
+                                borderColor:
+                                  getContrastRatio('#ffffff', axonBubbleBg) >= 3.5
+                                    ? 'rgba(255,255,255,0.12)'
+                                    : 'rgba(0,0,0,0.12)',
+                              }}
+                            >
+                              <span
+                                className="font-mono text-[10px] shrink-0"
+                                style={{
+                                  color:
+                                    getContrastRatio('#ffffff', axonBubbleBg) >= 3.5
+                                      ? 'rgba(255,255,255,0.7)'
+                                      : 'rgba(0,0,0,0.6)',
+                                }}
+                              >
+                                10:42 AM
+                              </span>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span style={{ color: effectiveAxonBtn }} className="p-1 rounded bg-white/10" title="Read aloud">
+                                  <Volume2 className="w-3 h-3" />
+                                </span>
+                                <span style={{ color: effectiveAxonBtn }} className="p-1 rounded bg-white/10" title="Copy text">
+                                  <Copy className="w-3 h-3" />
+                                </span>
+                                <span style={{ color: effectiveAxonBtn }} className="p-1 rounded bg-white/10" title="Bookmark">
+                                  <BookmarkPlus className="w-3 h-3" />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* User Message Bubble Controls */}
+                    <div className="pt-3 border-t border-neutral-800/60 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <User className="w-4 h-4 text-neutral-300" />
                           <div>
                             <p className="text-xs font-semibold text-white">User Message Bubble</p>
-                            <p className="text-[11px] text-neutral-400">Background and icon colors</p>
+                            <p className="text-[11px] text-neutral-400">Background and action button colors</p>
                           </div>
                         </div>
                         <span
@@ -422,9 +554,8 @@ export const SettingsScreen: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Controls: Bubble Color & Button Icons */}
                       <div className="grid grid-cols-2 gap-2.5">
-                        <label className="p-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center justify-between cursor-pointer">
+                        <label className="p-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center justify-between cursor-pointer hover:border-neutral-700 transition-colors">
                           <span className="text-xs text-neutral-300">Bubble Color</span>
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] text-neutral-400 uppercase">{userBubbleBg}</span>
@@ -440,7 +571,7 @@ export const SettingsScreen: React.FC = () => {
                             />
                           </div>
                         </label>
-                        <label className="p-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center justify-between cursor-pointer">
+                        <label className="p-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center justify-between cursor-pointer hover:border-neutral-700 transition-colors">
                           <span className="text-xs text-neutral-300">Button Icons</span>
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] text-neutral-400 uppercase">{effectiveUserBtn}</span>
@@ -455,53 +586,6 @@ export const SettingsScreen: React.FC = () => {
                         </label>
                       </div>
 
-                      {/* Live Preview User Bubble (non-overlapping, responsive) */}
-                      <div className="p-3 rounded-xl bg-neutral-900/40 border border-neutral-800/60">
-                        <div className="flex items-center justify-between mb-2 text-[10px] text-neutral-400">
-                          <span className="flex items-center gap-1">
-                            <Eye className="w-3 h-3 text-neutral-400" />
-                            Live Preview
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setFunctionColor('userMsgBtnColor', getAutoContrastColor(userBubbleBg))
-                            }
-                            className="text-[10px] text-neutral-300 hover:text-white underline underline-offset-2"
-                          >
-                            Set Optimal
-                          </button>
-                        </div>
-                        <div className="flex justify-end">
-                          <div
-                            style={{ backgroundColor: userBubbleBg }}
-                            className="w-full max-w-sm rounded-xl p-3 text-xs text-black shadow-sm"
-                          >
-                            <p className="font-normal leading-relaxed text-black">
-                              Can you see these action buttons clearly?
-                            </p>
-                            <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-black/15 text-[10px]">
-                              <span className="opacity-70 font-mono shrink-0">10:42 AM</span>
-                              <div className="flex items-center gap-1 shrink-0">
-                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Read aloud">
-                                  <Volume2 className="w-3 h-3" />
-                                </span>
-                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Copy text">
-                                  <Copy className="w-3 h-3" />
-                                </span>
-                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Bookmark">
-                                  <BookmarkPlus className="w-3 h-3" />
-                                </span>
-                                <span style={{ color: effectiveUserBtn }} className="p-1 rounded bg-black/5" title="Delete">
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Recommended Swatches */}
                       <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
                         <span className="text-[10px] uppercase font-semibold tracking-wider text-neutral-400 mr-1">
                           Recommended:
@@ -516,7 +600,7 @@ export const SettingsScreen: React.FC = () => {
                               className={`px-2 py-0.5 rounded-md text-[10px] flex items-center gap-1.5 transition-all border ${
                                 isCurrent
                                   ? 'bg-neutral-800 border-white text-white font-medium'
-                                  : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-neutral-300'
+                                  : 'bg-neutral-950/60 hover:bg-neutral-800 border-neutral-800/80 text-neutral-300'
                               }`}
                               title={`Apply ${rec.name} (${rec.contrastRatio}:1)`}
                             >
@@ -528,16 +612,14 @@ export const SettingsScreen: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* AI (AXON) Message Bubble Setting */}
-                    <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800/80 space-y-3">
+                    {/* AI (AXON) Message Bubble Controls (Exactly once) */}
+                    <div className="pt-3 border-t border-neutral-800/60 space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300">
-                            <Sparkles className="w-4 h-4" />
-                          </div>
+                        <div className="flex items-center gap-2.5">
+                          <Sparkles className="w-4 h-4 text-neutral-300" />
                           <div>
                             <p className="text-xs font-semibold text-white">AI (AXON) Message Bubble</p>
-                            <p className="text-[11px] text-neutral-400">Background and icon colors</p>
+                            <p className="text-[11px] text-neutral-400">Background and action button colors</p>
                           </div>
                         </div>
                         <span
@@ -552,9 +634,8 @@ export const SettingsScreen: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Controls */}
                       <div className="grid grid-cols-2 gap-2.5">
-                        <label className="p-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center justify-between cursor-pointer">
+                        <label className="p-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center justify-between cursor-pointer hover:border-neutral-700 transition-colors">
                           <span className="text-xs text-neutral-300">Bubble Color</span>
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] text-neutral-400 uppercase">{axonBubbleBg}</span>
@@ -570,7 +651,7 @@ export const SettingsScreen: React.FC = () => {
                             />
                           </div>
                         </label>
-                        <label className="p-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center justify-between cursor-pointer">
+                        <label className="p-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center justify-between cursor-pointer hover:border-neutral-700 transition-colors">
                           <span className="text-xs text-neutral-300">Button Icons</span>
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] text-neutral-400 uppercase">{effectiveAxonBtn}</span>
@@ -585,50 +666,6 @@ export const SettingsScreen: React.FC = () => {
                         </label>
                       </div>
 
-                      {/* Live Preview AI Bubble (non-overlapping, responsive) */}
-                      <div className="p-3 rounded-xl bg-neutral-900/40 border border-neutral-800/60">
-                        <div className="flex items-center justify-between mb-2 text-[10px] text-neutral-400">
-                          <span className="flex items-center gap-1">
-                            <Eye className="w-3 h-3 text-neutral-400" />
-                            Live Preview
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setFunctionColor('axonMsgBtnColor', getAutoContrastColor(axonBubbleBg))
-                            }
-                            className="text-[10px] text-neutral-300 hover:text-white underline underline-offset-2"
-                          >
-                            Set Optimal
-                          </button>
-                        </div>
-                        <div className="flex justify-start">
-                          <div
-                            style={{ backgroundColor: axonBubbleBg }}
-                            className="w-full max-w-sm rounded-xl p-3 text-xs text-neutral-100 border border-neutral-800/80 shadow-sm"
-                          >
-                            <p className="font-normal leading-relaxed text-neutral-100">
-                              All action buttons are crystal clear and contrast-verified.
-                            </p>
-                            <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-white/10 text-[10px]">
-                              <span className="opacity-70 font-mono shrink-0">10:42 AM</span>
-                              <div className="flex items-center gap-1 shrink-0">
-                                <span style={{ color: effectiveAxonBtn }} className="p-1 rounded bg-white/10" title="Read aloud">
-                                  <Volume2 className="w-3 h-3" />
-                                </span>
-                                <span style={{ color: effectiveAxonBtn }} className="p-1 rounded bg-white/10" title="Copy text">
-                                  <Copy className="w-3 h-3" />
-                                </span>
-                                <span style={{ color: effectiveAxonBtn }} className="p-1 rounded bg-white/10" title="Bookmark">
-                                  <BookmarkPlus className="w-3 h-3" />
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Recommended Swatches */}
                       <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
                         <span className="text-[10px] uppercase font-semibold tracking-wider text-neutral-400 mr-1">
                           Recommended:
@@ -643,7 +680,7 @@ export const SettingsScreen: React.FC = () => {
                               className={`px-2 py-0.5 rounded-md text-[10px] flex items-center gap-1.5 transition-all border ${
                                 isCurrent
                                   ? 'bg-neutral-800 border-white text-white font-medium'
-                                  : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-neutral-300'
+                                  : 'bg-neutral-950/60 hover:bg-neutral-800 border-neutral-800/80 text-neutral-300'
                               }`}
                               title={`Apply ${rec.name} (${rec.contrastRatio}:1)`}
                             >
@@ -656,18 +693,16 @@ export const SettingsScreen: React.FC = () => {
                     </div>
 
                     {/* Chat Input & Send Button */}
-                    <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800/80 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300">
-                          <Send className="w-4 h-4" />
-                        </div>
+                    <div className="pt-3 border-t border-neutral-800/60 space-y-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <Send className="w-4 h-4 text-neutral-300" />
                         <div>
                           <p className="text-xs font-semibold text-white">Input Bar & Send Button</p>
                           <p className="text-[11px] text-neutral-400">Bottom composer field appearance</p>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-2.5">
-                        <label className="p-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center justify-between cursor-pointer">
+                        <label className="p-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center justify-between cursor-pointer hover:border-neutral-700 transition-colors">
                           <span className="text-xs text-neutral-300">Send Button</span>
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] text-neutral-400 uppercase">{fColors.sendButtonColor || '#ffffff'}</span>
@@ -680,7 +715,7 @@ export const SettingsScreen: React.FC = () => {
                             />
                           </div>
                         </label>
-                        <label className="p-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center justify-between cursor-pointer">
+                        <label className="p-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center justify-between cursor-pointer hover:border-neutral-700 transition-colors">
                           <span className="text-xs text-neutral-300">Input Background</span>
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] text-neutral-400 uppercase">{fColors.chatInputBg || '#171717'}</span>
@@ -697,12 +732,10 @@ export const SettingsScreen: React.FC = () => {
                     </div>
 
                     {/* Microphone Recording Indicator */}
-                    <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800/80 space-y-3">
+                    <div className="pt-3 border-t border-neutral-800/60 space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300">
-                            <Mic className="w-4 h-4" />
-                          </div>
+                        <div className="flex items-center gap-2.5">
+                          <Mic className="w-4 h-4 text-neutral-300" />
                           <div>
                             <p className="text-xs font-semibold text-white">Microphone Recording Indicator</p>
                             <p className="text-[11px] text-neutral-400">
@@ -726,8 +759,7 @@ export const SettingsScreen: React.FC = () => {
                         )}
                       </div>
 
-                      {/* Swatches and Custom Color Picker */}
-                      <div className="space-y-2.5">
+                      <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-neutral-300">Preset Swatches</span>
                           <span className="text-[11px] font-mono text-neutral-400 uppercase">
@@ -736,7 +768,7 @@ export const SettingsScreen: React.FC = () => {
                         </div>
 
                         <div className="flex items-center justify-between gap-2 flex-wrap">
-                          <div className="flex items-center gap-2.5">
+                          <div className="flex items-center gap-2.5 flex-wrap">
                             {[
                               { hex: '#ef4444', name: 'Crimson Red (Default)' },
                               { hex: '#f97316', name: 'Amber Orange' },
@@ -769,8 +801,7 @@ export const SettingsScreen: React.FC = () => {
                             })}
                           </div>
 
-                          {/* Custom Color Input */}
-                          <label className="p-2 rounded-xl bg-neutral-900/80 border border-neutral-800 flex items-center gap-2 cursor-pointer hover:border-neutral-700 transition-colors">
+                          <label className="p-2 rounded-xl bg-neutral-950/60 border border-neutral-800/80 flex items-center gap-2 cursor-pointer hover:border-neutral-700 transition-colors">
                             <span className="text-xs text-neutral-400">Custom</span>
                             <input
                               type="color"
@@ -784,7 +815,7 @@ export const SettingsScreen: React.FC = () => {
                       </div>
 
                       {/* Live Mini Preview */}
-                      <div className="pt-2.5 border-t border-neutral-850/80 flex items-center justify-between gap-3 text-xs bg-neutral-900/40 p-3 rounded-xl border border-neutral-800/60">
+                      <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-neutral-950/60 border border-neutral-800/80 text-xs">
                         <div
                           className="flex items-center gap-2 text-xs px-2.5 py-1 rounded-lg border"
                           style={{
@@ -819,24 +850,25 @@ export const SettingsScreen: React.FC = () => {
                       </div>
                     </div>
 
-
-                    {/* Color Mixer Link */}
-                    <button
-                      type="button"
-                      onClick={() => navigateTo('tool_colors')}
-                      className="w-full flex items-center justify-between p-3.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 hover:bg-neutral-850 hover:border-neutral-700 transition-colors text-left group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300 group-hover:text-white">
-                          <Palette className="w-4 h-4" />
+                    {/* Color Mixer Link (System tab borderless row style) */}
+                    <div className="pt-2 border-t border-neutral-800/60">
+                      <button
+                        type="button"
+                        onClick={() => navigateTo('tool_colors')}
+                        className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-neutral-800/40 transition-colors text-left group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-xl bg-neutral-800/80 text-neutral-300 group-hover:text-white">
+                            <Palette className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-white">Color Mixer & Palette Tool</p>
+                            <p className="text-[11px] text-neutral-400">Open full color harmonies and custom palette tools</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-xs font-semibold text-white">Color Mixer & Palette Tool</p>
-                          <p className="text-[11px] text-neutral-400">Open full color harmonies and custom palette tools</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-300 transition-colors" />
-                    </button>
+                        <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-300 transition-colors" />
+                      </button>
+                    </div>
                   </div>
                 );
               })()}
@@ -1042,10 +1074,8 @@ export const SettingsScreen: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
 
-        {/* TAB 3: System & Storage */}
-        {activeTab === 'system' && (
+          {/* TAB 3: System & Storage */}
           <div className="space-y-6">
             {/* SECTION 1: Account & Notifications */}
             <div className="rounded-2xl bg-neutral-900/40 border border-neutral-800/80">
@@ -1207,7 +1237,6 @@ export const SettingsScreen: React.FC = () => {
               </button>
             </div>
           </div>
-        )}
         </SwipeableTabContainer>
       </div>
     </div>

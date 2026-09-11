@@ -19,6 +19,7 @@ import { BudgetSettingModal } from '../components/storage/BudgetSettingModal';
 import { TrimOptimizerModal } from '../components/storage/TrimOptimizerModal';
 import { RegisterAssetModal } from '../components/storage/RegisterAssetModal';
 import { StorageOnboardingModal } from '../components/storage/StorageOnboardingModal';
+import { SwipeableTabContainer } from '../components/SwipeableTabContainer';
 import { formatBytes } from '../lib/storageManifest';
 
 export const StorageDiagnosticsScreen: React.FC = () => {
@@ -182,24 +183,30 @@ export const StorageDiagnosticsScreen: React.FC = () => {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'manifest' && (
-        <AssetManifestTable
-          categoryFilter={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          onOpenRegisterModal={() => openPanel('storage-register')}
-        />
-      )}
+      <SwipeableTabContainer<'manifest' | 'categories' | 'packs'>
+        tabs={['manifest', 'categories', 'packs'] as const}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      >
+        <div>
+          <AssetManifestTable
+            categoryFilter={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            onOpenRegisterModal={() => openPanel('storage-register')}
+          />
+        </div>
 
-      {activeTab === 'categories' && (
-        <StorageCategoryBreakdown
-          selectedCategory={selectedCategory}
-          onSelectCategory={handleSelectCategoryFromBreakdown}
-        />
-      )}
+        <div>
+          <StorageCategoryBreakdown
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleSelectCategoryFromBreakdown}
+          />
+        </div>
 
-      {activeTab === 'packs' && (
-        <DownloadablePacksSection />
-      )}
+        <div>
+          <DownloadablePacksSection />
+        </div>
+      </SwipeableTabContainer>
 
       {/* Modals */}
       <BudgetSettingModal

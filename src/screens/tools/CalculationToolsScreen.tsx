@@ -385,9 +385,7 @@ export const CalculationToolsScreen: React.FC = () => {
           activeTab={activeTab}
           onTabChange={setActiveTab}
         >
-          <div>
-            {/* TAB 1: CALCULATOR */}
-            {activeTab === 'calc' && (
+          {/* TAB 1: CALCULATOR */}
           <div className="space-y-3">
             {/* Display Viewport */}
             <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 text-right space-y-1">
@@ -544,10 +542,8 @@ export const CalculationToolsScreen: React.FC = () => {
               </div>
             )}
           </div>
-        )}
 
-        {/* TAB 2: UNIT CONVERTERS */}
-        {activeTab === 'units' && (
+          {/* TAB 2: UNIT CONVERTERS */}
           <div className="space-y-3">
             {/* Category selection chips */}
             <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
@@ -646,8 +642,6 @@ export const CalculationToolsScreen: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-        )}
           </div>
         </SwipeableTabContainer>
       </div>
