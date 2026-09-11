@@ -28,6 +28,8 @@ import {
   TrimCategoryPriority,
   GeneralSettings,
   FunctionColors,
+  ProjectActivityEvent,
+  ProjectTimelineQuery,
 } from '../types';
 import {
   captureScreenScroll,
@@ -77,6 +79,14 @@ import {
   synthesizeExecutiveSummary,
   triggerFileDownload,
 } from '../lib/projectMemory';
+import { axonBrain } from '../lib/axonBrain';
+import { buildCapabilityRegistry, CapabilityRegistry } from '../lib/capabilityRegistry';
+import {
+  DEFAULT_PROJECT_ACTIVITIES,
+  createProjectActivityEvent,
+  queryProjectTimeline,
+} from '../lib/projectTimeline';
+import { fileIntelligence } from '../lib/fileIntelligence';
 
 interface ConfirmationConfig {
   isOpen: boolean;
@@ -221,6 +231,12 @@ interface AppContextType {
   updateStorageBudget: (updates: Partial<StorageBudgetConfig>) => void;
   trimStorageWithPlan: (priority?: TrimCategoryPriority[], targetBytes?: number) => { itemsPruned: number; bytesFreed: number };
   refreshStaleKnowledgeAsset: (id: string) => void;
+
+  // AXON Intelligence Core & Timeline (Phase 0)
+  capabilityRegistry: CapabilityRegistry;
+  projectActivities: ProjectActivityEvent[];
+  recordProjectActivity: (event: Omit<ProjectActivityEvent, 'id' | 'timestamp' | 'dateString' | 'timeString'>) => ProjectActivityEvent;
+  queryTimeline: (query: ProjectTimelineQuery) => ProjectActivityEvent[];
 
   // Global Confirmation Prompt
   requestConfirmation: (config: Omit<ConfirmationConfig, 'isOpen'>) => void;
@@ -631,6 +647,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.warn('Failed to load saved projects', e);
     }
     return DEFAULT_PROJECTS;
+  });
+
+  // Project Timeline Activities (Phase 0 Core)
+  const [projectActivities, setProjectActivities] = useState<ProjectActivityEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed: AppStateData = JSON.parse(saved);
+        if (parsed.projectActivities && parsed.projectActivities.length > 0) {
+          return parsed.projectActivities;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load saved project activities', e);
+    }
+    return DEFAULT_PROJECT_ACTIVITIES;
   });
 
   const [activeProjectId, setActiveProjectIdState] = useState<string>(() => {
@@ -1257,6 +1289,29 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return notes.filter((n) => (n.projectId || 'proj-general') === activeProjectId || n.projectId === 'global');
   }, [notes, activeProjectId]);
 
+  // AXON Capability Registry (Phase 0 Core — Internal tracking of external AI tool capabilities)
+  const capabilityRegistry = useMemo(() => {
+    return buildCapabilityRegistry(aiAccounts);
+  }, [aiAccounts]);
+
+  const recordProjectActivity = (
+    event: Omit<ProjectActivityEvent, 'id' | 'timestamp' | 'dateString' | 'timeString'>
+  ): ProjectActivityEvent => {
+    const newEvent = createProjectActivityEvent({
+      projectId: event.projectId,
+      type: event.type,
+      title: event.title,
+      summary: event.summary,
+      metadata: event.metadata,
+    });
+    setProjectActivities((prev) => [newEvent, ...prev]);
+    return newEvent;
+  };
+
+  const queryTimeline = (query: ProjectTimelineQuery): ProjectActivityEvent[] => {
+    return queryProjectTimeline(projectActivities, query);
+  };
+
   const createProject = (
     name: string,
     description?: string,
@@ -1276,6 +1331,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setProjects((prev) => [newProj, ...prev]);
     setActiveProjectIdState(newProj.id);
+    recordProjectActivity({
+      projectId: newProj.id,
+      type: 'project_created',
+      title: `Project Created: ${newProj.name}`,
+      summary: newProj.description || 'Project workspace created.',
+    });
     showToast(`Project "${newProj.name}" created`);
     return newProj;
   };
@@ -1355,6 +1416,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           storageBudget,
         },
         projects,
+        projectActivities,
         messages,
         notes,
         assetManifest,
@@ -1373,6 +1435,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     theme,
     icons,
     projects,
+    projectActivities,
     activeProjectId,
     messages,
     notes,
@@ -1765,6 +1828,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const nextMessages = [...messages, userMsg];
     setMessages(nextMessages);
+
+    // AXON Brain Core — Central intelligence processing pipeline (Phase 0 Scaffold)
+    const brainResult = await axonBrain.processRequest({
+      id: userMsg.id,
+      text,
+      projectId: activeProjectId,
+      attachment,
+      context: {
+        conversationHistory: nextMessages,
+        projectNotes: activeProjectNotes,
+        systemContext: activeProject.systemContext,
+        timelineEvents: projectActivities,
+        capabilityRegistry,
+      },
+    });
+
+    // Record activity in project timeline
+    if (brainResult.activityEvent) {
+      setProjectActivities((prev) => [brainResult.activityEvent!, ...prev]);
+    }
+
+    // Direct response handled by AXON internal intelligence (e.g. project timeline query, file intelligence search)
+    if (brainResult.handledLocally && brainResult.localResponse) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `msg-${Date.now()}-brain`,
+          sender: 'axon',
+          text: brainResult.localResponse!,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          modelUsed: brainResult.modelLabel,
+        },
+      ]);
+      return;
+    }
 
     // 0. Check for custom command Run Code entries (e.g. /status)
     const trimmedInput = (typeof text === 'string' ? text : '').trim();
@@ -2220,6 +2318,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updatedAt: new Date().toISOString().split('T')[0],
     };
     setNotes((prev) => [newNote, ...prev]);
+    recordProjectActivity({
+      projectId: targetProjId,
+      type: 'note_created',
+      title: `Note Created: ${newNote.title}`,
+      summary: newNote.content.slice(0, 80),
+      metadata: { noteId: newNote.id, category: newNote.category, tags: newNote.tags },
+    });
     showToast(`Note saved to "${targetProj.name}"`);
     return newNote;
   };
@@ -2529,6 +2634,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         storageBudget,
       },
       projects,
+      projectActivities,
       messages,
       notes,
       assetManifest,
@@ -2570,6 +2676,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (Array.isArray(parsed.projects) && parsed.projects.length > 0) {
         setProjects(parsed.projects);
       }
+      if (Array.isArray(parsed.projectActivities) && parsed.projectActivities.length > 0) {
+        setProjectActivities(parsed.projectActivities);
+      }
       if (Array.isArray(parsed.messages)) setMessages(sanitizeMessages(parsed.messages));
       if (Array.isArray(parsed.notes)) setNotes(parsed.notes);
       if (Array.isArray(parsed.assetManifest)) setAssetManifest(parsed.assetManifest);
@@ -2599,6 +2708,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       onConfirm: () => {
         localStorage.removeItem(STORAGE_KEY);
         setProjects(DEFAULT_PROJECTS);
+        setProjectActivities(DEFAULT_PROJECT_ACTIVITIES);
         setActiveProjectIdState('proj-general');
         setMessages(DEFAULT_MESSAGES);
         setNotes(DEFAULT_NOTES);
@@ -2677,6 +2787,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteRunCodeEntry,
         toggleRunCodeEntry,
         testRunCodeEntry,
+        capabilityRegistry,
+        projectActivities,
+        recordProjectActivity,
+        queryTimeline,
         notes,
         activeProjectNotes,
         addNote,

@@ -81,6 +81,85 @@ export interface ProjectItem {
   isDefault?: boolean;
   createdAt: string;
   updatedAt: string;
+  activityCount?: number;
+  lastActivityAt?: string;
+}
+
+export type ProjectActivityType =
+  | 'message_sent'
+  | 'note_created'
+  | 'note_updated'
+  | 'code_executed'
+  | 'file_uploaded'
+  | 'tool_used'
+  | 'project_created'
+  | 'project_milestone'
+  | 'task_completed';
+
+export interface ProjectActivityEvent {
+  id: string;
+  projectId: string;
+  timestamp: string; // ISO-8601 string e.g. "2026-09-11T04:49:10.000Z"
+  dateString: string; // YYYY-MM-DD for fast date-based index
+  timeString: string; // HH:MM
+  type: ProjectActivityType;
+  title: string;
+  summary: string;
+  metadata?: Record<string, any>;
+}
+
+export interface ProjectTimelineQuery {
+  projectId?: string;
+  date?: string; // YYYY-MM-DD
+  startDate?: string;
+  endDate?: string;
+  types?: ProjectActivityType[];
+  searchTerm?: string;
+  limit?: number;
+}
+
+export type FileIntelligenceType = 'document' | 'image' | 'video' | 'audio' | 'code';
+
+export interface FileIndexEntry {
+  id: string;
+  name: string;
+  fileType: FileIntelligenceType;
+  mimeType: string;
+  sizeBytes: number;
+  pathOrLocation?: string;
+  projectId?: string;
+  createdAt: string;
+  updatedAt: string;
+  metadata?: {
+    pageCount?: number;
+    dimensions?: { width: number; height: number };
+    durationSeconds?: number;
+    language?: string;
+    linesOfCode?: number;
+    encoding?: string;
+  };
+  extractedSummary?: string;
+  keywords?: string[];
+  tags?: string[];
+}
+
+export interface FileSearchQuery {
+  naturalLanguageQuery: string;
+  fileTypes?: FileIntelligenceType[];
+  projectId?: string;
+  dateRange?: {
+    from?: string;
+    to?: string;
+  };
+  minScore?: number;
+  limit?: number;
+}
+
+export interface FileSearchResult {
+  entry: FileIndexEntry;
+  matchScore: number;
+  matchedReasons: string[];
+  excerpt?: string;
 }
 
 export type IconPreset = 'axon-orb' | 'axon-minimal' | 'axon-neural' | 'axon-cyber';
@@ -318,6 +397,7 @@ export interface AppStateData {
     generalSettings?: GeneralSettings;
   };
   projects?: ProjectItem[];
+  projectActivities?: ProjectActivityEvent[];
   messages?: ChatMessage[];
   notes?: NoteItem[];
   assetManifest?: AssetManifestItem[];
