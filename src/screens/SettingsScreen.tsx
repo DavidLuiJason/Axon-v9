@@ -33,8 +33,9 @@ import {
 import { useApp } from '../context/AppContext';
 import { AxonLogo } from '../components/AxonLogo';
 import { AIAccountsSettings } from '../components/AIAccountsSettings';
+import { InstallAppSection } from '../components/InstallAppSection';
 import { SwipeableTabContainer } from '../components/SwipeableTabContainer';
-import { IconPreset } from '../types';
+import { IconPreset, formatAppNameCase, AppNameTextCase } from '../types';
 import { formatBytes } from '../lib/storageManifest';
 import {
   getContrastRatio,
@@ -59,6 +60,7 @@ export const SettingsScreen: React.FC = () => {
     removeAvatar,
     restoreAvatar,
     setSyncAppIconAndAvatar,
+    setAppNameTextCase,
     navigateTo,
     requestConfirmation,
     exportStateJson,
@@ -884,13 +886,21 @@ export const SettingsScreen: React.FC = () => {
                     <p className="text-xs text-neutral-400">Launcher icon displayed on home screen</p>
                   </div>
                 </div>
-                {/* Live Preview of current App Icon */}
-                <div className="p-1 rounded-2xl bg-neutral-950 border border-neutral-800">
-                  <AxonLogo
-                    size={40}
-                    preset={icons.appIconType === 'preset' ? icons.appIconPreset : undefined}
-                    customUrl={icons.appIconType === 'custom' ? icons.appIconCustomUrl : undefined}
-                  />
+                {/* Live Preview of current App Icon & App Name */}
+                <div className="flex flex-col items-center gap-1.5 shrink-0">
+                  <div className="p-1 rounded-2xl bg-neutral-950 border border-neutral-800">
+                    <AxonLogo
+                      size={40}
+                      preset={icons.appIconType === 'preset' ? icons.appIconPreset : undefined}
+                      customUrl={icons.appIconType === 'custom' ? icons.appIconCustomUrl : undefined}
+                    />
+                  </div>
+                  <span
+                    id="app-icon-preview-name"
+                    className="text-[11px] font-medium text-neutral-300 tracking-wide select-none"
+                  >
+                    {formatAppNameCase(icons.appNameTextCase)}
+                  </span>
                 </div>
               </div>
 
@@ -954,6 +964,39 @@ export const SettingsScreen: React.FC = () => {
                     <span>Revert to Default</span>
                   </button>
                 )}
+              </div>
+
+              {/* App Name Text Case (under logo) */}
+              <div className="pt-3 border-t border-neutral-800/60 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-neutral-300 font-medium">App Name Text Case</p>
+                  <span className="text-[10px] font-mono text-neutral-400">Under Logo</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'lowercase' as const, label: 'All lowercase', sample: 'axon' },
+                    { id: 'uppercase' as const, label: 'ALL CAPS', sample: 'AXON' },
+                    { id: 'first-letter' as const, label: 'First Letter Caps', sample: 'Axon' },
+                  ].map((option) => {
+                    const isSelected = (icons.appNameTextCase || 'uppercase') === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        id={`app-name-case-${option.id}-btn`}
+                        onClick={() => setAppNameTextCase(option.id)}
+                        className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all ${
+                          isSelected
+                            ? 'bg-neutral-800 border-white text-white shadow-sm'
+                            : 'bg-neutral-950/60 border-neutral-800/80 text-neutral-400 hover:text-white hover:border-neutral-700'
+                        }`}
+                      >
+                        <span className="text-xs font-semibold">{option.sample}</span>
+                        <span className="text-[10px] text-neutral-400 mt-0.5">{option.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -1119,6 +1162,9 @@ export const SettingsScreen: React.FC = () => {
                 <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-300 transition-colors" />
               </button>
             </div>
+
+            {/* SECTION: Install App (PWA) */}
+            <InstallAppSection showToast={showToast} />
 
             {/* SECTION 2: Storage & Manifest Overview */}
             <div className="rounded-2xl bg-neutral-900/40 border border-neutral-800/80 p-5 space-y-4">

@@ -467,6 +467,9 @@ app.post('/api/ai/transcribe', async (req, res) => {
 
 // Vite Middleware for Development or Static serving for Production
 async function startServer() {
+  // Explicitly serve static assets from public directory (manifest, service worker, icons)
+  app.use(express.static(path.join(process.cwd(), 'public')));
+
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },

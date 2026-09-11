@@ -85,6 +85,18 @@ export interface ProjectItem {
 
 export type IconPreset = 'axon-orb' | 'axon-minimal' | 'axon-neural' | 'axon-cyber';
 
+export type AppNameTextCase = 'lowercase' | 'uppercase' | 'first-letter';
+
+export const formatAppNameCase = (textCase?: AppNameTextCase, baseName: string = 'AXON'): string => {
+  if (textCase === 'lowercase') {
+    return baseName.toLowerCase();
+  }
+  if (textCase === 'first-letter') {
+    return baseName.charAt(0).toUpperCase() + baseName.slice(1).toLowerCase();
+  }
+  return baseName.toUpperCase();
+};
+
 export interface IconAvatarSettings {
   appIconType: 'preset' | 'custom';
   appIconPreset: IconPreset;
@@ -94,6 +106,9 @@ export interface IconAvatarSettings {
   avatarCustomUrl?: string;
   syncAppIconAndAvatar: boolean;
   showChatAvatar: boolean;
+  appNameTextCase?: AppNameTextCase;
+  previousAppIconCustomUrl?: string;
+  previousAvatarCustomUrl?: string;
 }
 
 export interface FunctionColors {

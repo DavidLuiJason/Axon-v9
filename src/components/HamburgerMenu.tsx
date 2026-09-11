@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AxonLogo } from './AxonLogo';
-import { ScreenId } from '../types';
+import { ScreenId, formatAppNameCase } from '../types';
 import { ProjectSwitcherModal } from './ProjectSwitcherModal';
 
 interface HamburgerMenuProps {
@@ -263,7 +263,9 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose })
               customUrl={icons.appIconType === 'custom' ? icons.appIconCustomUrl : undefined}
             />
             <div>
-              <span className="font-bold tracking-wider text-base text-white">AXON</span>
+              <span className="font-bold tracking-wider text-base text-white">
+                {formatAppNameCase(icons.appNameTextCase)}
+              </span>
               <p className="text-[11px] text-neutral-400">Personal AI Workspace</p>
             </div>
           </div>

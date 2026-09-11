@@ -10,6 +10,7 @@ import {
 import { useApp } from '../context/AppContext';
 import { AxonLogo } from './AxonLogo';
 import { ProjectSwitcherModal } from './ProjectSwitcherModal';
+import { formatAppNameCase } from '../types';
 
 interface HeaderProps {
   onOpenMenu: () => void;
@@ -36,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMenu }) => {
   const getScreenTitle = () => {
     switch (currentScreen) {
       case 'axon':
-        return 'AXON';
+        return formatAppNameCase(icons.appNameTextCase);
       case 'tools':
         return 'Tools Menu';
       case 'code':

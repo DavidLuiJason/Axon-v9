@@ -11,6 +11,7 @@ import {
   ThemeSettings,
   AppStateData,
   IconPreset,
+  AppNameTextCase,
   AIAccount,
   AIModelOption,
   AIProvider,
@@ -177,6 +178,7 @@ interface AppContextType {
   removeAvatar: () => void; // Revert avatar to default
   restoreAvatar: () => void; // Restore previously removed custom avatar
   setSyncAppIconAndAvatar: (sync: boolean) => void;
+  setAppNameTextCase: (textCase: AppNameTextCase) => void;
 
   // Notification / Sound settings
   notificationsEnabled: boolean;
@@ -376,6 +378,7 @@ const DEFAULT_ICONS: IconAvatarSettings = {
   avatarPreset: 'axon-orb',
   syncAppIconAndAvatar: false,
   showChatAvatar: false,
+  appNameTextCase: 'uppercase',
 };
 
 const DEFAULT_FUNCTION_COLORS: FunctionColors = {
@@ -687,7 +690,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: AppStateData = JSON.parse(saved);
-        if (parsed.settings?.icons) return parsed.settings.icons;
+        if (parsed.settings?.icons) {
+          return {
+            ...DEFAULT_ICONS,
+            ...parsed.settings.icons,
+          };
+        }
       }
     } catch (e) {}
     return DEFAULT_ICONS;
@@ -2499,6 +2507,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast(sync ? 'App icon & Avatar synced' : 'App icon & Avatar independent');
   };
 
+  const setAppNameTextCase = (textCase: AppNameTextCase) => {
+    setIcons((prev) => ({
+      ...prev,
+      appNameTextCase: textCase,
+    }));
+  };
+
   // State Export / Import
   const exportStateJson = (): string => {
     const data: AppStateData = {
@@ -2695,6 +2710,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         removeAvatar,
         restoreAvatar,
         setSyncAppIconAndAvatar,
+        setAppNameTextCase,
         notificationsEnabled,
         setNotificationsEnabled,
         soundEnabled,
