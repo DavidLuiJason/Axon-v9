@@ -94,6 +94,7 @@ export type ProjectActivityType =
   | 'tool_used'
   | 'project_created'
   | 'project_milestone'
+  | 'plan_created'
   | 'task_completed';
 
 export interface ProjectActivityEvent {

@@ -212,10 +212,10 @@ export function queryTimelineNaturalLanguage(
   const text = userPrompt.toLowerCase().trim();
 
   const isTimelineQuery =
-    /(?:when did (?:i|we)|what did (?:i|we) (?:do|work on)|show (?:my )?(?:work|activity|timeline|history)|work history|project timeline)/i.test(
+    /(?:when did (?:i|we|you)|what did (?:i|we|you) (?:do|work on|plan)|show (?:my )?(?:work|activity|timeline|history|plans)|work history|project timeline|what plans|planned activities)/i.test(
       text
     ) ||
-    /(?:when was .* (?:created|drafted|done|worked on|updated|written))/i.test(text);
+    /(?:when was .* (?:created|drafted|done|worked on|updated|written|planned))/i.test(text);
 
   if (!isTimelineQuery) {
     return { matches: false, answer: '', events: [] };
@@ -299,6 +299,15 @@ export function queryTimelineNaturalLanguage(
     lines.push(`  ${ev.summary}`);
     if (ev.metadata?.noteId) {
       lines.push(`  ↳ Associated Note ID: \`${ev.metadata.noteId}\``);
+    }
+    if (ev.metadata?.planId) {
+      const decisionLabel =
+        ev.metadata.decision === 'flagged_for_delegation'
+          ? 'Flagged for delegation'
+          : 'Attempted directly';
+      lines.push(
+        `  ↳ Decision: **${decisionLabel}** (${ev.metadata.stepsCount || 0} planned steps)`
+      );
     }
   }
 
